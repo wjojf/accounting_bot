@@ -1,0 +1,8 @@
+commands:
+   [/start, /commands] - get_reply_text_by_command(command: str) - статичный текст в ответе
+
+   add_spending - просит ввести наименование траты и сумму, после чего отправляет список категорий или предлагает в которую эту трату отнести
+
+   def add_spending -> register_next_step_hander(take_spending_input())
+
+   def get_stat - сводка по каждой категории трат

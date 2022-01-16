@@ -1,0 +1,11 @@
+{
+  "start": {
+    "reply_header": "Привет, я твой бот для контроля расходов. \n Чтобы узнать, что я могу, напиши /commands"
+  },
+  
+
+  "commands": {
+    "reply_header": "Вот, что я могу: \n bluh bluh bluh"
+  }
+
+}
