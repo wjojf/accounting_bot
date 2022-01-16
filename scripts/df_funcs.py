@@ -1,7 +1,7 @@
 import sqlite3
 import datetime
 
-DB_FILEPATH = 'DATABASE.db'
+DB_FILEPATH = './db/DATABASE.db'
 TABLE_NAME = 'records'
 CREATE_TABLE_QUERY = f"""CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
                                         user_id text,
