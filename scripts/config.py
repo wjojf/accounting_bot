@@ -1,7 +1,5 @@
-from load_text import load_json, CREDS_FILEPATH
-
 BOT_CONFIG = {
-	"API_TOKEN": load_json(CREDS_FILEPATH)['API_TOKEN'],
+	"API_TOKEN": "5055105445:AAGui3GVlshM8K0YNfMhF8d6o-AoP4xqOk0",
 	"DB_DIR": "../db/",
 	"STATIC_DIR": "../static/"
 }
