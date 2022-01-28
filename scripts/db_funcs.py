@@ -13,7 +13,8 @@ CREATE_SPENDINGS_TABLE_QUERY = f'''CREATE TABLE IF NOT EXISTS {SPENDINGS_TABLE_N
                                                         currency TEXT,
                                                         ammount INT
                                                             )'''
-
+CREATE_USER_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS user_config(user_id TEXT, user_status TEXT)'''
+                                                          
 
 def join_dict_values(_dict, out_separator=','):
     joined = []
@@ -156,9 +157,9 @@ def get_unique_categories_by_user_id(table_connection,table_name, user_id):
                                                     ['category'],
                                                     where={'user_id': user_id},
                                                     distinct=True)
-    #print(unique_categories_query)
+
     categories = exec_select_query(table_connection, unique_categories_query)
-    categories =  [cat[0] for cat in categories]
+    categories = [cat[0] for cat in categories]
 
     unique_currenices_query = generate_select_query(
         table_name,
@@ -168,10 +169,6 @@ def get_unique_categories_by_user_id(table_connection,table_name, user_id):
     )
     currencies = exec_select_query(table_connection, unique_currenices_query)
     currencies = [curr[0] for curr in currencies]
-
-    # for each category
-        # for each currency
-            # sum price*ammount where user_id = user_id AND category = category AND currency = currency
 
     output_dict = {}
     for category in categories:
@@ -197,6 +194,14 @@ def get_unique_categories_by_user_id(table_connection,table_name, user_id):
                 output_dict[category][currency] += p*a
 
     return output_dict
+
+
+'''USER_CONFIG SECTION'''
+
+def get_user_status(table_connection, user_id):
+    select_query = generate_select_query('user_config', ['user_status'])
+
+    return exec_select_query(table_connection, select_query)
 
 
 
