@@ -90,3 +90,4 @@ select_all_query = generate_select_all_query('user_config')
 res = exec_select_query(conn, select_all_query)
 for record in res:
     print(record)
+

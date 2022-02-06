@@ -3,8 +3,9 @@ import datetime
 
 DB_FILEPATH = '../db/DATABASE.db'
 
-SPENDINGS_TABLE_NAME = 'spendings'
-CREATE_SPENDINGS_TABLE_QUERY = f'''CREATE TABLE IF NOT EXISTS {SPENDINGS_TABLE_NAME}(
+# CREATE QUERIES
+
+CREATE_SPENDINGS_TABLE_QUERY = f'''CREATE TABLE IF NOT EXISTS spendings(
                                                         user_id TEXT,
                                                         date TEXT,
                                                         category TEXT,
@@ -14,7 +15,9 @@ CREATE_SPENDINGS_TABLE_QUERY = f'''CREATE TABLE IF NOT EXISTS {SPENDINGS_TABLE_N
                                                         ammount INT
                                                             )'''
 CREATE_USER_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS user_config(user_id TEXT, user_status TEXT)'''
-                                                          
+CREATE_ADMINS_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS admins(user_id TEXT, user_alias TEXT, admin_lvl TEXT)'''                                               
+
+
 
 def join_dict_values(_dict, out_separator=','):
     joined = []
@@ -35,12 +38,10 @@ def join_dict_values(_dict, out_separator=','):
 
     return out_separator.join(joined)
 
-def get_result_of_query(cursor):
-    return cursor.fetchall()
 
+def create_conn():
 
-def create_conn(db_file):
-
+    db_file = DB_FILEPATH
     conn = None
 
     try:
@@ -149,8 +150,6 @@ def exec_delete_query(table_connection, delete_query):
         print(f'exec_delete_query -> {e}')
 
 
-# TODO: fix selecting multiple columns bug
-
 def get_unique_categories_by_user_id(table_connection,table_name, user_id):
 
     unique_categories_query = generate_select_query(table_name,
@@ -196,15 +195,83 @@ def get_unique_categories_by_user_id(table_connection,table_name, user_id):
     return output_dict
 
 
+''' FINAL FUNCS '''
+
 '''USER_CONFIG SECTION'''
 
-def get_user_status(table_connection, user_id):
-    select_query = generate_select_query('user_config', ['user_status'])
+def get_user_row_from_db(user_id):
+    select_query = generate_select_query('user_config', '*', where={'user_id': user_id})
+    conn = create_conn()
 
-    return exec_select_query(table_connection, select_query)
+    user_row = exec_select_query(conn, select_query)
+
+    conn.close()
+
+    return user_row
+
+
+def make_user_admin(user_id):
+
+    select_alias_query = generate_select_query('user_config', ('user_alias'), where={'user_id': user_id}) 
+    conn = create_conn()
+    user_alias = exec_select_query(conn, select_alias_query)
+    
+    delete_user_query = generate_delete_query('user_config', where={'user_id': user_id})
+    exec_delete_query(conn, delete_user_query)
+
+    admin_insert_dict = {
+        'user_id': user_id,
+        'user_alias': user_alias,
+        'admin_lvl': 'admin'
+    } 
+    admin_insert_query = generate_insert_query('admins', admin_insert_dict)
+    exec_insert_query(conn, admin_insert_query)
+
+
+    conn.close()
+
+
+def insert_admins_from_json(admins_json):
+    admin_dicts =  admins_json['admins']
+
+    conn = create_conn()
+
+    for admin_dict in admin_dicts:
+        insert_admin_query = generate_insert_query('admins', admin_dict)
+        exec_insert_query(conn, insert_admin_query)
+
+    conn.close()
 
 
 
+def initialize_db():
+    global DB_FILEPATH, CREATE_SPENDINGS_TABLE_QUERY, CREATE_USER_CONFIG_TABLE_QUERY
+
+    conn = create_conn(DB_FILEPATH)
+    # create tables
+    print('creating tables')
+    create_table(conn, CREATE_SPENDINGS_TABLE_QUERY)
+    create_table(conn, CREATE_USER_CONFIG_TABLE_QUERY)
+    create_table(conn, CREATE_ADMINS_CONFIG_TABLE_QUERY)
+    print('tables created')
+    # insert admins
+    conn.close()
 
 
 
+def insert_user_spending(spending_dict):
+    global DB_FILEPATH
+
+    conn = create_conn(DB_FILEPATH)
+
+    insert_query = generate_insert_query('spendings', spending_dict)
+
+    try:
+        exec_select_query(conn, insert_query)
+        print('Succesfully inserted user spending')
+
+    
+    except Exception as e:
+        print(f'[insert_user_spending] -> {e}')
+
+    conn.close()
