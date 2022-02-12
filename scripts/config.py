@@ -1,5 +1,21 @@
 BOT_CONFIG = {
 	"API_TOKEN": "5055105445:AAGui3GVlshM8K0YNfMhF8d6o-AoP4xqOk0",
 	"DB_DIR": "../db/",
-	"STATIC_DIR": "../static/"
+	"DB_FILEPATH": "../db/DATABASE.db",
+	"STATIC_DIR": "../static/",
+	"STATIC_JSON_DIR": "../static/json/",
+	"STATIC_TXT_DIR": "../static/txt/",
+	"STATIC_CSV_DIR": "../static/csv",
+	
+ 	"COMMAND_REPLIES_JSON_FILEPATH": "../static/json/commands_replies.json",
+	"STICKERS_JSON_FILEPATH": "../static/json/stickers.json",
+	"TEXT_REPLIES_JSON_FILEPATH": "../static/json/text_replies.json",
+	"ADMINS_JSON_FILEPATH": "../static/json/admins.json",
+	
+	# TODO: finish rewriting ALL filepathes here
+	"UNRECOGNIZED_COMMANDS_CSV_FILEPATH": "../static/csv/unrecognized_commands.csv",
+	
+ 
 }
+
+

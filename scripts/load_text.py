@@ -1,30 +1,25 @@
 import csv
 import json 
 from random import choice
-from ml_funcs import *
+from classify_intent import *
 from config import BOT_CONFIG
 
 '''FILEPATH'''
 
 #BASE DIRS
-STATIC_DIR = BOT_CONFIG["STATIC_DIR"]
-STATIC_JSON_DIR = STATIC_DIR + 'json/'
-STATIC_TXT_DIR = STATIC_DIR + 'txt/'
-STATIC_CSV_DIR = STATIC_DIR + 'csv/'
+STATIC_JSON_DIR = BOT_CONFIG['STATIC_JSON_DIR']
+STATIC_TXT_DIR = BOT_CONFIG['STATIC_TXT_DIR']
+STATIC_CSV_DIR = BOT_CONFIG['STATIC_CSV_DIR']
 
 # JSON FILEPATH
-COMMAND_REPLIES_JSON_FILEPATH = STATIC_JSON_DIR + 'commands_replies.json'
-STICKERS_JSON_FILEPATH = STATIC_JSON_DIR + 'stickers.json'
-TEXT_REPLIES_JSON_FILEPATH = STATIC_JSON_DIR + 'text_replies.json'
+COMMAND_REPLIES_JSON_FILEPATH = BOT_CONFIG['COMMAND_REPLIES_JSON_FILEPATH']
+STICKERS_JSON_FILEPATH = BOT_CONFIG['STICKERS_JSON_FILEPATH']
+TEXT_REPLIES_JSON_FILEPATH = BOT_CONFIG['TEXT_REPLIES_JSON_FILEPATH']
+ADMINS_JSON_FILEPATH = BOT_CONFIG['ADMINS_JSON_FILEPATH']
 
 # CSV FILEPATH
-UNRECOGNIZED_COMMANDS_CSV_FILEPATH = STATIC_CSV_DIR + 'unrecognized_commands.csv'
+UNRECOGNIZED_COMMANDS_CSV_FILEPATH = BOT_CONFIG['UNRECOGNIZED_COMMANDS_CSV_FILEPATH']
 
-# CREDENTIALS FILEPATH
-CREDS_FILEPATH = STATIC_JSON_DIR + 'credentials.json'
-
-
-'''BASE'''
 
 # BASE FUNCS
 def load_json(filepath: str):
@@ -117,6 +112,7 @@ def load_sticker_by_key(sticker_key: str):
 	except KeyError:
 		return -1
 
+# commands 
 
 def command_is_valid(command: str):
 	commands_json = load_json(COMMAND_REPLIES_JSON_FILEPATH)
@@ -125,9 +121,11 @@ def command_is_valid(command: str):
 		return command in commands_json
 	return False
 
-def command_has_text(command: str):
+def command_has_reply_text(command: str):
 	commands_json = load_json(COMMAND_REPLIES_JSON_FILEPATH)
 
 	if commands_json:
 		return 'reply_text' in commands_json[command]
 	return False
+
+

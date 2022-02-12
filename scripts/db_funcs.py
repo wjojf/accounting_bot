@@ -1,7 +1,8 @@
 import sqlite3
 import datetime
+from config import BOT_CONFIG
 
-DB_FILEPATH = '../db/DATABASE.db'
+DB_FILEPATH = BOT_CONFIG['DB_FILEPATH']
 
 # CREATE QUERIES
 
@@ -193,6 +194,7 @@ def get_unique_categories_by_user_id(table_connection,table_name, user_id):
                 output_dict[category][currency] += p*a
 
     return output_dict
+
 
 
 ''' FINAL FUNCS '''

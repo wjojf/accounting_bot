@@ -1,7 +1,7 @@
-from db_funcs import *
-from load_text import *
-from ml_funcs import *
-import datetime
+# from db_funcs import *
+# from load_text import *
+# from ml_funcs import *
+# import datetime
 
 '''SPENDINGS TABLE TEST'''
 # conn = create_conn(DB_FILEPATH)
@@ -67,27 +67,69 @@ import datetime
 
 '''USER CONFIG TABLE TEST'''
 
-conn = create_conn(DB_FILEPATH)
-create_table(conn, CREATE_USER_CONFIG_TABLE_QUERY)
+# conn = create_conn(DB_FILEPATH)
+# create_table(conn, CREATE_USER_CONFIG_TABLE_QUERY)
 
-test_inserts = [
-    {
-        'user_id': 'wjojf',
-        'user_status': 'admin'
-    },
-    {
-        'user_id': 'not_wjojf',
-        'user_status': 'user'
-    }
+# test_inserts = [
+#     {
+#         'user_id': 'wjojf',
+#         'user_status': 'admin'
+#     },
+#     {
+#         'user_id': 'not_wjojf',
+#         'user_status': 'user'
+#     }
 
-]
+# ]
 
-for insert in test_inserts:
-    query = generate_insert_query('user_config', insert)
-    exec_insert_query(conn, query)
+# for insert in test_inserts:
+#     query = generate_insert_query('user_config', insert)
+#     exec_insert_query(conn, query)
 
-select_all_query = generate_select_all_query('user_config')
-res = exec_select_query(conn, select_all_query)
-for record in res:
-    print(record)
+# select_all_query = generate_select_all_query('user_config')
+# res = exec_select_query(conn, select_all_query)
+# for record in res:
+#     print(record)
 
+
+# Test system setup
+
+class Tank():
+    """Простая модель танка"""
+
+    def __init__(self, name, color):
+        """Инициализация атрибутов"""
+        self.name = name
+        self.color = color
+        print('Танк создан')
+
+    def prizel(self):
+        """Прицел"""
+        print(self.name.title(), 'танк прицелился') 
+
+    def wistrel(self):
+        """Выстрел"""
+        print(self.name.title(), 'танк выстрелил')
+
+    def wpered(self):
+        """Вперед"""
+        print(self.name.title(), 'танк поехал вперёд')        
+        
+    def nazad(self):
+        """Назад"""
+        print(self.name.title(), 'танк поехал назад')
+
+    def wprawo(self):
+        """Вправо"""
+        print(self.name.title(), 'танк поехал вправо')
+
+    def wlewo(self):
+        """Влево"""
+        print(self.name.title(), 'танк поехал влево')
+
+
+my_tank = Tank('TU-36', 'black')
+my_tank2 = Tank('SU-45', 'white')
+my_tank3 = Tank('LRK-13', 'grey')
+
+print(my_tank.nazad)
