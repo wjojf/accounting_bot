@@ -112,20 +112,4 @@ def load_sticker_by_key(sticker_key: str):
 	except KeyError:
 		return -1
 
-# commands 
-
-def command_is_valid(command: str):
-	commands_json = load_json(COMMAND_REPLIES_JSON_FILEPATH)
-
-	if commands_json:
-		return command in commands_json
-	return False
-
-def command_has_reply_text(command: str):
-	commands_json = load_json(COMMAND_REPLIES_JSON_FILEPATH)
-
-	if commands_json:
-		return 'reply_text' in commands_json[command]
-	return False
-
 
