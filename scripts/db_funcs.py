@@ -163,7 +163,7 @@ def get_unique_categories_by_user_id(table_connection,table_name, user_id):
 
     unique_currenices_query = generate_select_query(
         table_name,
-        ['currency'],
+        ('currency'),
         where={'user_id': user_id},
         distinct=True
     )
