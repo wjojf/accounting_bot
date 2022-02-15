@@ -14,8 +14,8 @@ BOT_CONFIG = {
 	
 	# TODO: finish rewriting ALL filepathes here
 	"UNRECOGNIZED_COMMANDS_CSV_FILEPATH": "../static/csv/unrecognized_commands.csv",
-	
- 
+
+	'ERROR_IMAGE_FILEPATH': '../static/png/error.png'
 }
 
 

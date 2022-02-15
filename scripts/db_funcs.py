@@ -10,10 +10,9 @@ CREATE_SPENDINGS_TABLE_QUERY = f'''CREATE TABLE IF NOT EXISTS spendings(
                                                         user_id TEXT,
                                                         date TEXT,
                                                         category TEXT,
-                                                        title TEXT,
+                                                        title TEXT
                                                         price FLOAT,
                                                         currency TEXT,
-                                                        ammount INT
                                                             )'''
 CREATE_USER_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS user_config(user_id TEXT, user_status TEXT)'''
 CREATE_ADMINS_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS admins(user_id TEXT, user_alias TEXT, admin_lvl TEXT)'''                                               

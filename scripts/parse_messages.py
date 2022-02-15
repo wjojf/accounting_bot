@@ -1,5 +1,12 @@
 from config import BOT_CONFIG
+import re
+import pprint
+printer = pprint.PrettyPrinter()
 
+
+def split_words(message: str):
+    rgx = re.compile("([\w][\w']*\w)")
+    return rgx.findall(message)
 
 def parse_currency(currency_from_message: str):
     
@@ -33,15 +40,30 @@ def get_intent_by_message(message: str):
 
 def split_user_spending_message(user_message: str):
     #splits user message and returns a list of needed dtypes for db insert
-    pass 
-
+    return split_words(user_message)
 
 def parse_message_to_insert_dict(user_message: str, user_id, date):
     # gets list of splitted message with needed dtypes for insertion 
     # and creates and insertion_dict for db_func exec_insert_query to run
-    pass 
+    message_splitted = split_words(user_message)
+    try:
+        category, title, price, currency = message_splitted
+        return {
+            'user_id': user_id,
+            'date': date,
+            'category':  category,
+            'title': title,
+            'price': price,
+            'currency': parse_currency(currency) 
+        }
+
+
+    except:
+        return None
+    
 
 
 
 
-
+if __name__ == '__main__':
+    printer.pprint(parse_message_to_insert_dict(user_id='wjojf', date='2022-02-14', user_message='еда гамбургер 50 рубль'))
