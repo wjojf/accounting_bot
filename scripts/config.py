@@ -5,7 +5,8 @@ BOT_CONFIG = {
 	"STATIC_DIR": "../static/",
 	"STATIC_JSON_DIR": "../static/json/",
 	"STATIC_TXT_DIR": "../static/txt/",
-	"STATIC_CSV_DIR": "../static/csv",
+	"STATIC_PNG_DIR": "../static/png/",
+ 	"STATIC_CSV_DIR": "../static/csv",
 	
  	"COMMAND_REPLIES_JSON_FILEPATH": "../static/json/commands_replies.json",
 	"STICKERS_JSON_FILEPATH": "../static/json/stickers.json",
