@@ -33,8 +33,9 @@ def filter_df_by_date(user_df, date_min, date_max):
     
     try:
         return user_df[(user_df['date'] >= date_min) & (user_df['date'] <= date_max)]
+    
     except: 
-        return 
+        return None 
  
 def spendings_barplot_by_date(user_data, plot_type='spendings_barplot_by_date'):
 	'''user_data: df of columns ['user_id', date', 'currency', 'money_spent']'''
@@ -44,17 +45,31 @@ def spendings_barplot_by_date(user_data, plot_type='spendings_barplot_by_date'):
 		plt.ylabel('Сумма Затрат')
 		plt.title(f'Затраты за период {user_data["date"].min()}-{user_data["date"].max()}')
 		
-		filepath = generate_plot_title(
+		filepath = generate_plot_filepath(
       			list(user_data['user_id'])[0],
          		plot_type,
            		user_data['date'].min(),
              	user_data['date'].max())
-		
-  		plt.savefig(filepath)
+		plt.savefig(filepath)
 		print('Успешно сохранена картинка')
 		return filepath
 	
- 	except:
+	except:
 		print('Ошибка данных')
 		return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
 
+
+def category_pieplot_by_currency(user_data, plot_type='category_spendings_pieplot'):
+    '''user_data: df of columns ['user_id', 'category', 'money_spent', 'currency']'''
+    def plot_pie(x, labels, **kwargs):
+        plt.pie(x=x, labels=labels)
+
+    try:
+        grid = sns.FacetGrid(user_data, col='currency')
+        grid.map(plot_pie, 'money_spent','category')
+        
+        filepath = generate_plot_filepath(list(user_data['user_id'])[0], plot_type)
+        plt.savefig(filepath)
+    
+    except:
+        return BOT_CONFIG['ERROR_IMAGE_FILEPATH']

@@ -93,43 +93,22 @@
 
 
 # Test system setup
+import pandas as pd
+import matplotlib.pyplot as plt 
+import seaborn as sns
 
-class Tank():
-    """Простая модель танка"""
-
-    def __init__(self, name, color):
-        """Инициализация атрибутов"""
-        self.name = name
-        self.color = color
-        print('Танк создан')
-
-    def prizel(self):
-        """Прицел"""
-        print(self.name.title(), 'танк прицелился') 
-
-    def wistrel(self):
-        """Выстрел"""
-        print(self.name.title(), 'танк выстрелил')
-
-    def wpered(self):
-        """Вперед"""
-        print(self.name.title(), 'танк поехал вперёд')        
-        
-    def nazad(self):
-        """Назад"""
-        print(self.name.title(), 'танк поехал назад')
-
-    def wprawo(self):
-        """Вправо"""
-        print(self.name.title(), 'танк поехал вправо')
-
-    def wlewo(self):
-        """Влево"""
-        print(self.name.title(), 'танк поехал влево')
+df = pd.DataFrame(
+    [
+        ('wjojf', 'food', 25000, 'RUB'),
+        ('wjojf', 'food', 120, 'USD'),
+        ('wjojf', 'games', 2500, 'RUB'),
+        ('wjojf', 'education', 15, 'USD')
+    ], columns=('user_id', 'category', 'money_spent', 'currency'))
 
 
-my_tank = Tank('TU-36', 'black')
-my_tank2 = Tank('SU-45', 'white')
-my_tank3 = Tank('LRK-13', 'grey')
+grid = sns.FacetGrid(df, col='currency')
+def plot_pie(x, labels, **kwargs):
+    plt.pie(x=x, labels=labels)
 
-print(my_tank.nazad)
+grid.map(plot_pie, 'money_spent', 'category')
+plt.show()

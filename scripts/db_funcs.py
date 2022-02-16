@@ -2,6 +2,9 @@ import sqlite3
 import datetime
 from config import BOT_CONFIG
 
+# TODO: write select funcs for plot dfs(look plots.py for columns you need)
+
+
 DB_FILEPATH = BOT_CONFIG['DB_FILEPATH']
 
 # CREATE QUERIES
@@ -150,7 +153,7 @@ def exec_delete_query(table_connection, delete_query):
         print(f'exec_delete_query -> {e}')
 
 
-def get_unique_categories_by_user_id(table_connection,table_name, user_id):
+def get_category_total_spendings(table_connection,table_name, user_id):
 
     unique_categories_query = generate_select_query(table_name,
                                                     ['category'],
@@ -276,3 +279,16 @@ def insert_user_spending(spending_dict):
         print(f'[insert_user_spending] -> {e}')
 
     conn.close()
+
+
+def select_user_spendings(user_id):
+    global DB_FILEPATH
+    
+    conn = create_conn(DB_FILEPATH)
+    
+    user_spendings_query = generate_select_query(
+        'spendings', '*', 
+        where={'user_id': user_id})
+    
+    return exec_select_query(conn, user_spendings_query)
+    
