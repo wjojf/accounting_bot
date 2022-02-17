@@ -70,6 +70,7 @@ def category_pieplot_by_currency(user_data, plot_type='category_spendings_pieplo
         
         filepath = generate_plot_filepath(list(user_data['user_id'])[0], plot_type)
         plt.savefig(filepath)
+        return filepath
     
     except:
         return BOT_CONFIG['ERROR_IMAGE_FILEPATH']

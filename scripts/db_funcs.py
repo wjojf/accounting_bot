@@ -1,3 +1,4 @@
+from itertools import groupby
 import sqlite3
 import datetime
 from config import BOT_CONFIG
@@ -40,6 +41,7 @@ def join_dict_values(_dict, out_separator=','):
             joined.append('='.join([str(x) for x in [k,v]]))
 
     return out_separator.join(joined)
+
 
 
 def create_conn():
@@ -93,24 +95,30 @@ def exec_select_query(table_connection, select_query):
 def generate_select_all_query(table_name):
     return f'SELECT * FROM {table_name}'
 
-def generate_select_query(table_name, columns, where=None, distinct=False):
+def generate_select_query(table_name, columns, where=None, groupby=None distinct=False):
     # handle columns
     if len(columns) == 1:
         columns_string = f'{columns[0]}'
     else:
         columns_string = ','.join(columns)
 
-
-
-    if where == None:
-        if distinct:
-            return f'''SELECT DISTINCT {columns_string} FROM {table_name}'''
-        return  f'''SELECT {columns_string} FROM {table_name}'''
-
-    where_joined = join_dict_values(where, ' AND ')
+    query = f'SELECT {columns_string} FROM {table_name}'
+    
     if distinct:
-        return f'''SELECT DISTINCT {columns_string} FROM {table_name} WHERE {where_joined}'''
-    return f'''SELECT {columns_string} FROM {table_name} WHERE {where_joined}'''
+        query = query.replace('SELECT ', 'SELECT DISTINCT ')
+    
+    if where:
+        where_joined = join_dict_values(where)
+        query += f'WHERE {where_joined}'
+    
+    if groupby:
+        groupby_joined = ','.join(groupby)
+        query += f'GROUP BY {groupby_joined}'
+    
+    return query
+        
+    
+    
 
 def generate_update_query(table_name, update_values, where_values):
 
@@ -151,52 +159,6 @@ def exec_delete_query(table_connection, delete_query):
         connection_cursor.execute(delete_query)
     except Error as e:
         print(f'exec_delete_query -> {e}')
-
-
-def get_category_total_spendings(table_connection,table_name, user_id):
-
-    unique_categories_query = generate_select_query(table_name,
-                                                    ['category'],
-                                                    where={'user_id': user_id},
-                                                    distinct=True)
-
-    categories = exec_select_query(table_connection, unique_categories_query)
-    categories = [cat[0] for cat in categories]
-
-    unique_currenices_query = generate_select_query(
-        table_name,
-        ('currency'),
-        where={'user_id': user_id},
-        distinct=True
-    )
-    currencies = exec_select_query(table_connection, unique_currenices_query)
-    currencies = [curr[0] for curr in currencies]
-
-    output_dict = {}
-    for category in categories:
-
-        if category not in output_dict.keys():
-            output_dict[category] = {}
-
-        for currency in currencies:
-
-            if currency not in output_dict[category].keys():
-                output_dict[category][currency] = 0
-
-            price_ammount_query = generate_select_query(
-                table_name,
-                ('price', 'ammount'),
-                where={'user_id': user_id, 'category': category, 'currency': currency}
-            )
-            print(price_ammount_query)
-            price_ammount = exec_select_query(table_connection, price_ammount_query)
-
-            for record in price_ammount:
-                p, a = record
-                output_dict[category][currency] += p*a
-
-    return output_dict
-
 
 
 ''' FINAL FUNCS '''
@@ -292,3 +254,30 @@ def select_user_spendings(user_id):
     
     return exec_select_query(conn, user_spendings_query)
     
+
+# plots section
+def get_category_total_spendings(table_connection, user_id, table_name='spendings'):
+    
+    select_category_spendings_query = generate_select_query(
+                                    table_name,
+                                    ('user_id', 'category', 'currency', "SUM('price')"),
+                                    where={'user_id': user_id},
+                                    groupby=('category', 'currency')
+                                )
+
+    category_total_spenings = exec_select_query(table_connection, select_category_spendings_query)
+
+    return category_total_spenings
+
+
+def get_spendings_groupby_date(table_connection, user_id, table_name='spendings'):
+    
+    select_spendings_by_date_query = generate_select_query(
+        table_name, ('user_id', 'date', 'currency', 'SUM(price)'),
+        where={'user_id': user_id},
+        groupby=('date', 'currency')
+    )
+
+    spendings_by_date = exec_select_query(table_connection, select_spendings_by_date_query)
+    
+    return spendings_by_date
