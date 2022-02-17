@@ -91,3 +91,23 @@ def category_lineplot_by_date(user_data, plot_type='category_lineplot_by_date'):
         filepath = generate_plot_filepath(user_id, plot_type)
     except:
         return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
+
+
+def categories_barplot_by_currency(user_data, plot_type='categoris_barplot_by_currency'):
+    '''user_data: df of columns ['user_id', 'category', 'currency', 'money_spent']'''
+
+    user_id = list(use_data['user_id'])[0]
+    user_data.drop(columns=['user_id'], inplace=True)
+
+    try:
+        grid = sns.FacetGrid(user_data, col='currency')
+        grid.map(sns.catplot, x='category', y='money_spent', kind='bar')
+
+        filepath = generate_plot_filepath(user_id, plot_type)
+        plt.savefig(filepath)
+
+        return filepath
+
+    except:
+        return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
+
