@@ -14,10 +14,10 @@ CREATE_SPENDINGS_TABLE_QUERY = f'''CREATE TABLE IF NOT EXISTS spendings(
                                                         user_id TEXT,
                                                         date TEXT,
                                                         category TEXT,
-                                                        title TEXT
+                                                        title TEXT,
                                                         price FLOAT,
-                                                        currency TEXT,
-                                                            )'''
+                                                        currency TEXT
+                                                )'''
 CREATE_USER_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS user_config(user_id TEXT, user_status TEXT)'''
 CREATE_ADMINS_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS admins(user_id TEXT, user_alias TEXT, admin_lvl TEXT)'''                                               
 
@@ -95,7 +95,7 @@ def exec_select_query(table_connection, select_query):
 def generate_select_all_query(table_name):
     return f'SELECT * FROM {table_name}'
 
-def generate_select_query(table_name, columns, where=None, groupby=None distinct=False):
+def generate_select_query(table_name, columns, where=None, groupby=None, distinct=False):
     # handle columns
     if len(columns) == 1:
         columns_string = f'{columns[0]}'
@@ -109,11 +109,11 @@ def generate_select_query(table_name, columns, where=None, groupby=None distinct
     
     if where:
         where_joined = join_dict_values(where)
-        query += f'WHERE {where_joined}'
+        query += f' WHERE {where_joined}'
     
     if groupby:
         groupby_joined = ','.join(groupby)
-        query += f'GROUP BY {groupby_joined}'
+        query += f' GROUP BY {groupby_joined}'
     
     return query
         
@@ -213,7 +213,7 @@ def insert_admins_from_json(admins_json):
 def initialize_db():
     global DB_FILEPATH, CREATE_SPENDINGS_TABLE_QUERY, CREATE_USER_CONFIG_TABLE_QUERY
 
-    conn = create_conn(DB_FILEPATH)
+    conn = create_conn()
     # create tables
     print('creating tables')
     create_table(conn, CREATE_SPENDINGS_TABLE_QUERY)
@@ -258,7 +258,7 @@ def select_user_spendings(user_id):
     
 
 # plots section
-def get_category_total_spendings(table_connection, user_id, table_name='spendings'):
+def get_categoies_total_spendings(table_connection, user_id, table_name='spendings'):
     
     select_categories_spendings_query = generate_select_query(
                                     table_name,
@@ -267,9 +267,9 @@ def get_category_total_spendings(table_connection, user_id, table_name='spending
                                     groupby=('category', 'currency')
                                 )
 
-    category_total_spenings = exec_select_query(table_connection, select_categories_spendings_query)
+    categories_total_spenings = exec_select_query(table_connection, select_categories_spendings_query)
 
-    return category_total_spenings
+    return categories_total_spenings
 
 
 def get_spendings_groupby_date(table_connection, user_id, table_name='spendings'):
@@ -279,7 +279,7 @@ def get_spendings_groupby_date(table_connection, user_id, table_name='spendings'
         where={'user_id': user_id},
         groupby=('date', 'currency')
     )
-
+    print(select_spendings_by_date_query)
     spendings_by_date = exec_select_query(table_connection, select_spendings_by_date_query)
     
     return spendings_by_date
@@ -292,7 +292,8 @@ def get_category_spendings(table_connection, user_id, category, table_name='spen
                             where={
                                 'user_id': user_id,
                                 'category': category
-                            }
+                            },
+                            groupby=('date')
                         )
 
     category_spendings = exec_select_query(table_connection, select_category_spendings_query)

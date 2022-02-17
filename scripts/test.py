@@ -1,114 +1,38 @@
-# from db_funcs import *
-# from load_text import *
-# from ml_funcs import *
-# import datetime
-
-'''SPENDINGS TABLE TEST'''
-# conn = create_conn(DB_FILEPATH)
-# create_table(conn, CREATE_SPENDINGS_TABLE_QUERY)
-#
-# insert_dicts = [
-#     {
-#         'user_id': "id_1",
-#         'date': str(datetime.datetime.now()),
-#         'category': 'taxi',
-#         'title': 'такси',
-#         'price': 750,
-#         'currency': 'RUB',
-#         'ammount': 1
-#     },
-#
-#     {
-#         'user_id': "wjojf",
-#         'date': str(datetime.datetime.now()),
-#         'category': 'food',
-#         'title': 'гамбургер',
-#         'price': 50,
-#         'currency': 'RUB',
-#         'ammount': 1
-#     },
-#
-#     {
-#         'user_id': 'wjojf',
-#         'date': str(datetime.datetime.now()),
-#         'category': 'games',
-#         'title': 'minecraft',
-#         'price': 299,
-#         'currency': 'RUB',
-#         'ammount': 1
-#     },
-#
-# ]
-#
-# for insert_dict in insert_dicts:
-#     query = generate_insert_query('spendings', insert_dict)
-#     exec_insert_query(conn, query)
-#
-# print('AFTER FIRST INSERT')
-#
-# select_all_query = generate_select_all_query('spendings')
-# rows = exec_select_query(conn, select_all_query)
-# for row in rows:
-#     print(*row)
-# print()
-# print('UPDATING SOME VALUES')
-# print()
-# update_query = generate_update_query('spendings', {'price': 75, 'ammount': 2},{'user_id': "wjojf", 'category': 'food'})
-# exec_update_query(conn, update_query)
-#
-# rows = exec_select_query(conn, select_all_query)
-# for row in rows:
-#     print(*row)
-# print()
-# print('GROUP BY MULTIPLE COLUMNS')
-# print(get_unique_categories_by_user_id(conn,'spendings','wjojf'))
-#
-# print('')
-
-'''USER CONFIG TABLE TEST'''
-
-# conn = create_conn(DB_FILEPATH)
-# create_table(conn, CREATE_USER_CONFIG_TABLE_QUERY)
-
-# test_inserts = [
-#     {
-#         'user_id': 'wjojf',
-#         'user_status': 'admin'
-#     },
-#     {
-#         'user_id': 'not_wjojf',
-#         'user_status': 'user'
-#     }
-
-# ]
-
-# for insert in test_inserts:
-#     query = generate_insert_query('user_config', insert)
-#     exec_insert_query(conn, query)
-
-# select_all_query = generate_select_all_query('user_config')
-# res = exec_select_query(conn, select_all_query)
-# for record in res:
-#     print(record)
+from db_funcs import *
+from load_text import *
+from plots import *
+import datetime
 
 
-# Test system setup
-import pandas as pd
-import matplotlib.pyplot as plt 
-import seaborn as sns
+initialize_db()
 
-df = pd.DataFrame(
-    [
-        ('wjojf', 'food', 25000, 'RUB'),
-        ('wjojf', 'food', 120, 'USD'),
-        ('wjojf', 'games', 2500, 'RUB'),
-        ('wjojf', 'education', 15, 'USD')
-    ], columns=('user_id', 'category', 'money_spent', 'currency'))
+conn = create_conn()
+
+insert_queries = [
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-01', 'food', 'cheesburger', 75.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-01', 'education', 'datacamp', 15.0, 'USD')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-01', 'games', 'nba2k22', 759.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-02', 'transport', 'autobus', 51.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-03', 'food', 'coffee', 180.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-04', 'food', 'coffee', 180.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-05', 'food', 'coffee', 180.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-06', 'food', 'coffee', 180.0, 'RUB')",
+    "INSERT INTO spendings VALUES('wjojf', '2022-02-07', 'food', 'coffee', 180.0, 'RUB')",
+    "INSERT INTO spendings VALUES ('wjojf', '2022-02-08', 'food', 'coffee', 180.0, 'RUB')"     
+]
+
+for insert_query in insert_queries:
+    exec_insert_query(conn, insert_query)
 
 
-grid = sns.FacetGrid(df, col='currency')
-def plot_pie(x, labels, **kwargs):
-    plt.pie(x=x, labels=labels)
 
-grid.map(plot_pie, 'money_spent', 'category')
-plt.show()
+
+spendings_groupby_date = get_spendings_groupby_date(conn, 'wjojf')
+spendings_by_date_df = generate_df_from_db_rows(spendings_groupby_date, ('user_id', 'date', 'currency', 'money_spent'))
+print(spendings_groupby_date)
+res = spendings_barplot_by_date(spendings_by_date_df)
+print(res)
+
+
+delete_all_query = generate_delete_all_query('spendings')
+exec_delete_query(conn, delete_all_query)

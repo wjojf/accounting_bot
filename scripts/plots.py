@@ -25,7 +25,7 @@ def generate_plot_filepath(user_id, plot_type, date_min=None, date_max=None):
 
 
 
-def generate_df_from_db_rows(column_names, db_rows):
+def generate_df_from_db_rows(db_rows, column_names):
     return pd.DataFrame(db_rows, columns=column_names)
 
 
@@ -35,28 +35,23 @@ def filter_df_by_date(user_df, date_min, date_max):
         return user_df[(user_df['date'] >= date_min) & (user_df['date'] <= date_max)]
     
     except: 
-        return None 
- 
+        return None
+'''user_data: df of columns ['user_id', date', 'currency', 'money_spent']'''
 def spendings_barplot_by_date(user_data, plot_type='spendings_barplot_by_date'):
-	'''user_data: df of columns ['user_id', date', 'currency', 'money_spent']'''
-	try:
-		sns.barplot(x='date', y='money_spent', data=user_data, hue='currency')
-		plt.xlabel('Дата')
-		plt.ylabel('Сумма Затрат')
-		plt.title(f'Затраты за период {user_data["date"].min()}-{user_data["date"].max()}')
-		
-		filepath = generate_plot_filepath(
-      			list(user_data['user_id'])[0],
-         		plot_type,
-           		user_data['date'].min(),
-             	user_data['date'].max())
-		plt.savefig(filepath)
-		print('Успешно сохранена картинка')
-		return filepath
-	
-	except:
-		print('Ошибка данных')
-		return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
+    try:
+        sns.barplot(x='date', y='money_spent', data=user_data, hue='currency')
+        plt.xticks(rotation=90)
+        plt.xlabel('Дата')
+        plt.ylabel('Сумма Затрат')
+        plt.title(f'Затраты {list(user_data["user_id"])[0]}')
+
+        filepath = generate_plot_filepath(list(user_data['user_id'])[0], plot_type)
+        plt.savefig(filepath)
+        print('Успешно сохранена картинка')
+        return filepath
+
+    except Exception as e:
+        print(e, BOT_CONFIG['ERROR_IMAGE_FILEPATH'])
 
 
 def categories_pieplot_by_currency(user_data, plot_type='category_spendings_pieplot'):
