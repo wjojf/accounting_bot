@@ -1,3 +1,4 @@
+import os
 import csv
 import json 
 from random import choice
@@ -10,6 +11,7 @@ from config import BOT_CONFIG
 STATIC_JSON_DIR = BOT_CONFIG['STATIC_JSON_DIR']
 STATIC_TXT_DIR = BOT_CONFIG['STATIC_TXT_DIR']
 STATIC_CSV_DIR = BOT_CONFIG['STATIC_CSV_DIR']
+STATIC_PNG_DIR = BOT_CONFIG['STATIC_PNG_DIR']
 
 # JSON FILEPATH
 COMMAND_REPLIES_JSON_FILEPATH = BOT_CONFIG['COMMAND_REPLIES_JSON_FILEPATH']
@@ -112,4 +114,20 @@ def load_sticker_by_key(sticker_key: str):
 	except KeyError:
 		return -1
 
+
+# img 
+
+def img_exists(filepath: str):
+	if filepath.endswith('.png'):
+		return filepath in os.listdir(STATIC_PNG_DIR)
+	return False
+
+def images_by_user_id(user_id: str):
+	return [filepath for filepath in os.listdir(STATIC_PNG_DIR) if user_id in filepath]
+
+def images_by_user_id_and_plot_type(user_id: str, plot_type: str):
+	return [
+		filepath for filepath in os.listdir(STATIC_PNG_DIR) 
+		if user_id in filepath and plot_type in filepath
+	]
 

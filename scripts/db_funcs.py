@@ -249,8 +249,10 @@ def select_user_spendings(user_id):
     conn = create_conn(DB_FILEPATH)
     
     user_spendings_query = generate_select_query(
-        'spendings', '*', 
-        where={'user_id': user_id})
+        'spendings',
+        '*', 
+        where={'user_id': user_id}
+    )
     
     return exec_select_query(conn, user_spendings_query)
     
@@ -258,14 +260,14 @@ def select_user_spendings(user_id):
 # plots section
 def get_category_total_spendings(table_connection, user_id, table_name='spendings'):
     
-    select_category_spendings_query = generate_select_query(
+    select_categories_spendings_query = generate_select_query(
                                     table_name,
                                     ('user_id', 'category', 'currency', "SUM('price')"),
                                     where={'user_id': user_id},
                                     groupby=('category', 'currency')
                                 )
 
-    category_total_spenings = exec_select_query(table_connection, select_category_spendings_query)
+    category_total_spenings = exec_select_query(table_connection, select_categories_spendings_query)
 
     return category_total_spenings
 
@@ -281,3 +283,18 @@ def get_spendings_groupby_date(table_connection, user_id, table_name='spendings'
     spendings_by_date = exec_select_query(table_connection, select_spendings_by_date_query)
     
     return spendings_by_date
+
+def get_category_spendings(table_connection, user_id, category, table_name='spendings'):
+
+    select_category_spendings_query = generate_select_query(
+                            table_name,
+                            ('user_id', 'currency', 'date', 'price'),
+                            where={
+                                'user_id': user_id,
+                                'category': category
+                            }
+                        )
+
+    category_spendings = exec_select_query(table_connection, select_category_spendings_query)
+
+    return category_spendings
