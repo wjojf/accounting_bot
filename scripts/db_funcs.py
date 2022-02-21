@@ -108,11 +108,15 @@ def generate_select_query(table_name, columns, where=None, groupby=None, distinc
         query = query.replace('SELECT ', 'SELECT DISTINCT ')
     
     if where:
-        where_joined = join_dict_values(where)
+        where_joined = join_dict_values(where, ' AND ')
         query += f' WHERE {where_joined}'
     
     if groupby:
-        groupby_joined = ','.join(groupby)
+
+        if len(groupby) > 1:
+            groupby_joined = ','.join(groupby)
+        else:
+            groupby_joined = groupby[0]
         query += f' GROUP BY {groupby_joined}'
     
     return query
@@ -262,7 +266,7 @@ def get_categoies_total_spendings(table_connection, user_id, table_name='spendin
     
     select_categories_spendings_query = generate_select_query(
                                     table_name,
-                                    ('user_id', 'category', 'currency', "SUM('price')"),
+                                    ('user_id', 'category', 'currency', "SUM(price)"),
                                     where={'user_id': user_id},
                                     groupby=('category', 'currency')
                                 )
@@ -288,14 +292,14 @@ def get_category_spendings(table_connection, user_id, category, table_name='spen
 
     select_category_spendings_query = generate_select_query(
                             table_name,
-                            ('user_id', 'currency', 'date', 'price'),
+                            ('user_id','category', 'date', 'currency', 'SUM(price)'),
                             where={
                                 'user_id': user_id,
                                 'category': category
                             },
-                            groupby=('date')
+                            groupby=['date', 'currency']
                         )
-
+    print(select_category_spendings_query)
     category_spendings = exec_select_query(table_connection, select_category_spendings_query)
 
     return category_spendings

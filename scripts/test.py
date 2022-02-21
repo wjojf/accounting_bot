@@ -1,38 +1,35 @@
-from db_funcs import *
-from load_text import *
 from plots import *
-import datetime
+#import datetime
 
 
-initialize_db()
+df_rows = [
+            ('wjojf', '2022-02-01', 'food', 'cheesburger', 75.0, 'RUB'),
+            ('wjojf', '2022-02-01', 'education', 'datacamp', 15.0, 'USD'),
+            ('wjojf', '2022-02-01', 'games', 'nba2k22', 759.0, 'RUB'),
+            ('wjojf', '2022-02-02', 'transport', 'autobus', 51.0, 'RUB'),
+            ('wjojf', '2022-02-03', 'food', 'coffee', 180.0, 'RUB'),
+            ('wjojf', '2022-02-04', 'food', 'coffee', 180.0, 'RUB'),
+            ('wjojf', '2022-02-05', 'food', 'coffee', 180.0, 'RUB'),
+            ('wjojf', '2022-02-06', 'food', 'coffee', 180.0, 'RUB'),
+            ('wjojf', '2022-02-07', 'food', 'coffee', 180.0, 'RUB'),
+            ('wjojf', '2022-02-08', 'food', 'coffee', 180.0, 'RUB'),
+            ('wjojf', '2022-02-08', 'food', 'coffee', 100.0, 'USD')
+        ]
 
-conn = create_conn()
+df = pd.DataFrame(df_rows, columns=['user_id', 'date', 'category', 'title', 'price', 'currency'])
 
-insert_queries = [
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-01', 'food', 'cheesburger', 75.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-01', 'education', 'datacamp', 15.0, 'USD')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-01', 'games', 'nba2k22', 759.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-02', 'transport', 'autobus', 51.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-03', 'food', 'coffee', 180.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-04', 'food', 'coffee', 180.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-05', 'food', 'coffee', 180.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-06', 'food', 'coffee', 180.0, 'RUB')",
-    "INSERT INTO spendings VALUES('wjojf', '2022-02-07', 'food', 'coffee', 180.0, 'RUB')",
-    "INSERT INTO spendings VALUES ('wjojf', '2022-02-08', 'food', 'coffee', 180.0, 'RUB')"     
-]
+grouped_by_date_currency = df.groupby(['user_id', 'date', 'currency']).agg({'price': 'sum'}).reset_index().sort_values(by='date')
 
-for insert_query in insert_queries:
-    exec_insert_query(conn, insert_query)
-
-
-
-
-spendings_groupby_date = get_spendings_groupby_date(conn, 'wjojf')
-spendings_by_date_df = generate_df_from_db_rows(spendings_groupby_date, ('user_id', 'date', 'currency', 'money_spent'))
-print(spendings_groupby_date)
-res = spendings_barplot_by_date(spendings_by_date_df)
+res = spendings_lineplot_by_date(grouped_by_date_currency)
 print(res)
 
+res = spendings_barplot_by_date(grouped_by_date_currency)
+print(res)
 
-delete_all_query = generate_delete_all_query('spendings')
-exec_delete_query(conn, delete_all_query)
+grouped_by_category_currency = df.groupby(['user_id', 'category', 'currency']).agg({'price': 'sum'}).reset_index()
+
+res = categories_barplot_by_currency(grouped_by_category_currency)
+print(res)
+
+res = categories_pieplot_by_currency(grouped_by_category_currency)
+print(res)
