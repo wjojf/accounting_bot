@@ -46,8 +46,10 @@ def parse_message_to_insert_dict(user_message: str, user_id, date):
     # gets list of splitted message with needed dtypes for insertion 
     # and creates and insertion_dict for db_func exec_insert_query to run
     message_splitted = split_words(user_message)
+
     try:
         category, title, price, currency = message_splitted
+
         return {
             'user_id': user_id,
             'date': date,
@@ -59,11 +61,10 @@ def parse_message_to_insert_dict(user_message: str, user_id, date):
 
 
     except:
-        return None
+        return
     
 
 
 
 
-if __name__ == '__main__':
-    printer.pprint(parse_message_to_insert_dict(user_id='wjojf', date='2022-02-14', user_message='еда гамбургер 50 рубль'))
+print(split_words('еда гамбурге 50 руб'))

@@ -2,10 +2,22 @@
   "start": {
     "reply_text": "Привет, я твой бот для контроля расходов. \n Чтобы узнать, что я могу, напиши /commands"
   },
-  
 
-  "commands": {
+  "help": {
     "reply_text": "Вот, что я могу: \n bluh bluh bluh"
+  },
+
+  "add_spending": {
+    "reply_text": "Введите затрату в формате: категория, наименование затраты, стоимость, валюта",
+    "user_input_required": "True"
+  },
+
+  "spendings_stats": {
+    "reply_text": "Варианты статистики затрат: 1)(week/month/threemonths/sixmonths/year)_by_date: сумма затрат за месяц по дням. \n 2))",
+
+
+    
+
   }
 
 }
