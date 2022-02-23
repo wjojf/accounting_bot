@@ -24,23 +24,6 @@ def generate_plot_filepath(user_id, plot_type, date_min=None, date_max=None):
     return plot_filepath
 
 
-'''DataFrames'''
-
-
-def generate_df_from_db_rows(db_rows, column_names):
-    df = pd.DataFrame(db_rows, columns=column_names)
-    return df
-
-
-def filter_df_by_date(user_df, date_min=None, date_max=None):
-    
-    if date_min:
-        if date_max:
-            return user_df[(user_df['date'] >= date_min) & (user_df['date'] <= date_max)]
-        return user_df[(user_df['date'] >= date_min)]
-    return user_df
-
-
 '''Lineplots'''
 
 
