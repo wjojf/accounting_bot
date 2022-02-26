@@ -7,15 +7,11 @@ BOT_CONFIG = {
 	"STATIC_TXT_DIR": "../static/txt/",
 	"STATIC_PNG_DIR": "../static/png/",
  	"STATIC_CSV_DIR": "../static/csv",
-	
  	"COMMAND_REPLIES_JSON_FILEPATH": "../static/json/commands_replies.json",
 	"STICKERS_JSON_FILEPATH": "../static/json/stickers.json",
 	"TEXT_REPLIES_JSON_FILEPATH": "../static/json/text_replies.json",
 	"ADMINS_JSON_FILEPATH": "../static/json/admins.json",
-	
-	# TODO: finish rewriting ALL filepathes here
 	"UNRECOGNIZED_COMMANDS_CSV_FILEPATH": "../static/csv/unrecognized_commands.csv",
-
 	'ERROR_IMAGE_FILEPATH': '../static/png/error.png'
 }
 

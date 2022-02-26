@@ -22,6 +22,8 @@ ADMINS_JSON_FILEPATH = BOT_CONFIG['ADMINS_JSON_FILEPATH']
 # CSV FILEPATH
 UNRECOGNIZED_COMMANDS_CSV_FILEPATH = BOT_CONFIG['UNRECOGNIZED_COMMANDS_CSV_FILEPATH']
 
+# STATIC_JSON
+
 
 # BASE FUNCS
 def load_json(filepath: str):
@@ -131,3 +133,8 @@ def images_by_user_id_and_plot_type(user_id: str, plot_type: str):
 		if user_id in filepath and plot_type in filepath
 	]
 
+
+# messages
+
+def generate_insertion_validating_message(user_insertion_dict):
+	return f'''{STICKERS_J}Проверьте правильность ввода: ''''''

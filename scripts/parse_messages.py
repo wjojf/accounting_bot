@@ -8,6 +8,7 @@ def split_words(message: str):
     rgx = re.compile("([\w][\w']*\w)")
     return rgx.findall(message)
 
+
 def parse_currency(currency_from_message: str):
     
     currency_map = {
@@ -26,21 +27,22 @@ def parse_currency(currency_from_message: str):
 
 def get_intent_by_message(message: str):
 
-	message = message.lower()
+    message = message.lower()
 
-	intent_by_examples = get_intent_by_examples(message)
-	predicted_intent = classify_intent_by_message()
+    intent_by_examples = get_intent_by_examples(message)
+    predicted_intent = classify_intent_by_message()
 
-	if intent_by_examples != -1:
-		return intent_by_examples
+    if intent_by_examples != -1:
+        return intent_by_examples
 
-	return predicted_intent
-
+    return predicted_intent
 
 
 def split_user_spending_message(user_message: str):
     #splits user message and returns a list of needed dtypes for db insert
+    # TODO: check dtypes
     return split_words(user_message)
+
 
 def parse_message_to_insert_dict(user_message: str, user_id, date):
     # gets list of splitted message with needed dtypes for insertion 
@@ -58,13 +60,11 @@ def parse_message_to_insert_dict(user_message: str, user_id, date):
             'price': price,
             'currency': parse_currency(currency) 
         }
-
-
-    except:
+    except Exception as e:
+        print(e)
         return
     
 
 
 
 
-print(split_words('еда гамбурге 50 руб'))

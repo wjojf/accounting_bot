@@ -1,6 +1,9 @@
 {
-	"sad": "U+1F61E",
+	"sad": "\u1f61e",
 	"complete" : "\u2705",
-	"hi" : "\ud83d\ude4b\u200d\u2642\ufe0f",
-	"fail" : "\u274c"
+	"hi" : "\ud83d\ude4b",
+	"fail" : "\u274c",
+	"attention": "",
+	"question": "",
+	"search": "\u1f50e"
 }
