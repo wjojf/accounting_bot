@@ -2,7 +2,6 @@ import os
 import csv
 import json 
 from random import choice
-from classify_intent import *
 from config import BOT_CONFIG
 
 '''FILEPATH'''
@@ -133,8 +132,3 @@ def images_by_user_id_and_plot_type(user_id: str, plot_type: str):
 		if user_id in filepath and plot_type in filepath
 	]
 
-
-# messages
-
-def generate_insertion_validating_message(user_insertion_dict):
-	return f'''{STICKERS_J}Проверьте правильность ввода: ''''''

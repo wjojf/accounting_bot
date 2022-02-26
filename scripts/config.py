@@ -10,6 +10,8 @@ BOT_CONFIG = {
  	"COMMAND_REPLIES_JSON_FILEPATH": "../static/json/commands_replies.json",
 	"STICKERS_JSON_FILEPATH": "../static/json/stickers.json",
 	"TEXT_REPLIES_JSON_FILEPATH": "../static/json/text_replies.json",
+	"KEYBOARD_BUTTONS_JSON_FILEPATH": "../static/json/KeyboardButtons.json",
+	"INLINE_KEYBOARD_BUTTONS_JSON_FILEPATH": "../static/json/InlineKeyboardButtons.json",
 	"ADMINS_JSON_FILEPATH": "../static/json/admins.json",
 	"UNRECOGNIZED_COMMANDS_CSV_FILEPATH": "../static/csv/unrecognized_commands.csv",
 	'ERROR_IMAGE_FILEPATH': '../static/png/error.png'

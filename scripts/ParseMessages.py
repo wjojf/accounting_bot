@@ -1,7 +1,6 @@
 from config import BOT_CONFIG
 import re
-import pprint
-printer = pprint.PrettyPrinter()
+
 
 
 def split_words(message: str):
