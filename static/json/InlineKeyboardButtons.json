@@ -1,0 +1,12 @@
+{
+    "add_spending_set_custom_date": [
+        {
+            "text": "Сегодня",
+            "callback_data": "today"
+        },
+        {
+            "text": "Своя дата",
+            "callback_data": "custom_date"
+        }
+    ]
+}

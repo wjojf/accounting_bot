@@ -6,6 +6,10 @@
 
   "help": {
     "reply_text": "Вот, что я могу: \n bluh bluh bluh"
-  }
+  },
+
+  "add_spending": {
+    "reply_text": "Введите затрату СТРОГО в формате "
+  } 
 
 }

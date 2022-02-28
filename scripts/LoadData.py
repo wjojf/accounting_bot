@@ -47,6 +47,13 @@ def load_csv(filepath: str):
 		return -1
 
 
+def load_command_reply_text(command):
+	commands_json = load_json(COMMAND_REPLIES_JSON_FILEPATH)
+    
+	if command in commands_json:
+		return commands_json[command]['reply_text']
+	
+	return f'Ты вызвал комманду {command}'
 
 '''STATIC TEXT SECTION'''
 
