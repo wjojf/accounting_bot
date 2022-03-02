@@ -1,5 +1,5 @@
 BOT_CONFIG = {
-	"API_TOKEN": "5055105445:AAGui3GVlshM8K0YNfMhF8d6o-AoP4xqOk0",
+	"API_TOKEN": "5055105445:AAH5NkQSO5ODV8a3lL40VCcf61ivo-yOEjA",
 	"DB_DIR": "../db/",
 	"DB_FILEPATH": "../db/DATABASE.db",
 	"STATIC_DIR": "../static/",

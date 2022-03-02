@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import csv
 import json 
@@ -139,3 +140,8 @@ def images_by_user_id_and_plot_type(user_id: str, plot_type: str):
 		if user_id in filepath and plot_type in filepath
 	]
 
+
+# dates
+
+def get_current_date():
+    return datetime.now().strftime('%Y-%m-%d')

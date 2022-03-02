@@ -1,5 +1,6 @@
+from scripts.ParseMessages import parse_message_to_insert_dict
 import telebot
-from LoadData import load_json
+from LoadData import *
 from config import BOT_CONFIG
 
 
@@ -47,4 +48,10 @@ def generate_inline_keyboard(json_key: str):
         keyboard.add(bot_button)
     
     return keyboard
+
+
+def send_reply_text_by_command(bot, chat_id, command):
+    CommandReplyText = load_command_reply_text(command)
+    bot.send_message(chat_id, CommandReplyText)
+
 
