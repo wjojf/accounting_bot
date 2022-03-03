@@ -11,7 +11,7 @@ def split_words(message: str):
 def parse_currency(currency_from_message: str):
     
     currency_map = {
-        'RUB': ['руб', 'р', 'рубль'],
+        'RUB': ['руб', 'р', 'рубль', 'rub', 'ru'],
         "USD": ['usd', 'доллар'],
         "EUR": ['eur', 'eu', 'евро']
     }

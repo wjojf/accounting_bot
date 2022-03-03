@@ -144,4 +144,11 @@ def images_by_user_id_and_plot_type(user_id: str, plot_type: str):
 # dates
 
 def get_current_date():
-    return datetime.now().strftime('%Y-%m-%d')
+	return datetime.now().strftime('%Y-%m-%d')
+
+# messages
+def generate_validating_message(insertion_dict):
+
+	dict_strings = [f'📍{k}:{v}' for k,v in insertion_dict.items()]
+
+	return '\n'.join(dict_strings)

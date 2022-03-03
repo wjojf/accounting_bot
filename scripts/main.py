@@ -32,20 +32,17 @@ def user_has_insert(user_id):
     global USER_INSERTS
     
     return bool(USER_INSERTS[user_id]) if user_id in USER_INSERTS else False
-   
+
 
 def user_has_date(user_id):
     global CUSTOM_DATE
     
     return user_id in CUSTOM_DATE
 
+
 def set_user_spending_date(user_id, date):
     global CUSTOM_DATE
     CUSTOM_DATE[user_id] = date
-    
-
-def set_user_spending_date_by_message(message):
-    set_user_spending_date(message.from_user.id, message.text)
 
 
 def load_user_spending_date(user_id):
@@ -62,10 +59,18 @@ def handle_insertion_input(message):
         return 
     
     insertion_dict = parse_message_to_insert_dict(message.text, user_id, load_user_spending_date(user_id))
-    
-    BOT.send_message(message.chat.id, f'Проверьте ввод: {insertion_dict}')
-          
-    
+
+    validation_message = generate_validating_message(insertion_dict)
+
+    BOT.send_message(message.chat.id, validation_message)
+
+
+def handle_custom_date_insertion_input(message):
+    set_user_spending_date(message.from_user.id, message.text)
+    sent = BOT.send_message(message.chat.id, 'Введите затрату СТРОГО в формате категория название цена валюта (еда гамбургер 50 руб)')
+    BOT.register_next_step_handler(sent, handle_insertion_input)
+
+
 @BOT.message_handler(commands=['add_spending'])
 def handle_add_spending(message):
     reply_text = load_command_reply_text('add_spending')
@@ -77,15 +82,16 @@ def handle_add_spending(message):
 def handle_callback(call):
     
     if 'spending_date' in call.data:
+
         if call.data == 'spending_date_today':
             set_user_spending_date(call.from_user.id, get_current_date())
-        
+            ask_for_spending = BOT.send_message(call.message.chat.id, 'Введите затрату СТРОГО в формате категория название цена валюта (еда гамбургер 50 руб)')
+            BOT.register_next_step_handler(ask_for_spending, handle_insertion_input)
+
         elif call.data == 'spending_date_custom':
             sent = BOT.send_message(call.message.chat.id, 'Введите дату строго в формате год-месяц-день(2022-03-01)')
-            BOT.register_next_step_handler(sent, set_user_spending_date_by_message)
+            BOT.register_next_step_handler(sent, handle_custom_date_insertion_input)
 
-        ask_for_spending = BOT.send_message(call.message.chat.id, 'Введите затрату СТРОГО в формате категория название цена валюта (еда гамбургер 50 руб)')
-        BOT.register_next_step_handler(ask_for_spending, handle_insertion_input)
         
 
 

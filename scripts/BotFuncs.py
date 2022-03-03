@@ -49,9 +49,3 @@ def generate_inline_keyboard(json_key: str):
     
     return keyboard
 
-
-def send_reply_text_by_command(bot, chat_id, command):
-    CommandReplyText = load_command_reply_text(command)
-    bot.send_message(chat_id, CommandReplyText)
-
-
