@@ -151,4 +151,4 @@ def generate_validating_message(insertion_dict):
 
 	dict_strings = [f'📍{k}:{v}' for k,v in insertion_dict.items()]
 
-	return '\n'.join(dict_strings)
+	return 'Проверьте ввод: ' + '\n'.join(dict_strings)

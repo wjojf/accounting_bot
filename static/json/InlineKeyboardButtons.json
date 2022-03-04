@@ -58,5 +58,17 @@
             "text": "Последний год",
             "callback_data": "this_year"
         }
+    ],
+
+    "verify_insertion_keyboard": [
+        {
+            "text": "Все правильно!",
+            "callback_data": "verify_insertion_true"
+        },
+
+        {
+            "text": "Неправильно!",
+            "callback_data": "verify_insertion_false"
+        }
     ]
 }

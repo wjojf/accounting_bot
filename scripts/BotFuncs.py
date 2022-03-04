@@ -1,6 +1,7 @@
 from scripts.ParseMessages import parse_message_to_insert_dict
 import telebot
 from LoadData import *
+from DbFuncs import *
 from config import BOT_CONFIG
 
 
@@ -49,3 +50,29 @@ def generate_inline_keyboard(json_key: str):
     
     return keyboard
 
+
+def clear_user_insert(user_id, USER_INSERTS):
+    if user_id in USER_INSERTS:
+        USER_INSERTS[user_id] = None
+
+
+def user_has_insert(user_id, USER_INSERTS):
+    return bool(USER_INSERTS[user_id]) if user_id in USER_INSERTS else False
+
+
+def user_has_date(user_id, CUSTOM_DATE):
+    return user_id in CUSTOM_DATE
+
+
+def set_user_spending_date(user_id, CUSTOM_DATE, date):
+    CUSTOM_DATE[user_id] = date
+
+
+def load_user_spending_date(user_id, CUSTOM_DATE):
+    return CUSTOM_DATE[user_id]
+
+
+def save_user_insertion(user_id, USER_INSERTS):
+    if user_has_insert(user_id):
+        user_insert = USER_INSERTS[user_id]
+        insert_user_spending(user_insert)
