@@ -50,7 +50,7 @@ def create_conn():
     conn = None
 
     try:
-        conn = sqlite3.connect(db_file)
+        conn = sqlite3.connect(db_file, check_same_thread=False)
         return conn
 
     except Exception as e:
@@ -95,6 +95,7 @@ def exec_select_query(table_connection, select_query):
 def generate_select_all_query(table_name):
     return f'SELECT * FROM {table_name}'
 
+
 def generate_select_query(table_name, columns, where=None, groupby=None, distinct=False):
     # handle columns
     if len(columns) == 1:
@@ -122,8 +123,6 @@ def generate_select_query(table_name, columns, where=None, groupby=None, distinc
     return query
         
     
-    
-
 def generate_update_query(table_name, update_values, where_values):
 
 
@@ -141,8 +140,9 @@ def exec_update_query(table_connection, update_query):
 
     try:
         connection_cursor.execute(update_query)
+        return 'Success'
     except Exception as e:
-        print('')
+        print('exec_update_query ->', e)
 
 def generate_insert_query(table_name, column_values_dict):
     return f'INSERT INTO {table_name} {tuple(column_values_dict.keys())} VALUES {tuple(column_values_dict.values())}'
@@ -165,10 +165,7 @@ def exec_delete_query(table_connection, delete_query):
         print(f'exec_delete_query -> {e}')
 
 
-''' FINAL FUNCS '''
-
 '''USER_CONFIG SECTION'''
-
 def get_user_row_from_db(user_id):
     select_query = generate_select_query('user_config', '*', where={'user_id': user_id})
     conn = create_conn()
@@ -229,13 +226,11 @@ def initialize_db():
 
 
 
-def insert_user_spending(spending_dict):
-    global DB_FILEPATH
+def insert_user_spending(spending_dict, conn):
 
-    conn = create_conn(DB_FILEPATH)
 
     insert_query = generate_insert_query('spendings', spending_dict)
-
+    print(insert_query)
     try:
         exec_select_query(conn, insert_query)
         print('Succesfully inserted user spending')
@@ -244,22 +239,8 @@ def insert_user_spending(spending_dict):
     except Exception as e:
         print(f'[insert_user_spending] -> {e}')
 
-    conn.close()
 
 
-def select_user_spendings(user_id):
-    global DB_FILEPATH
-    
-    conn = create_conn(DB_FILEPATH)
-    
-    user_spendings_query = generate_select_query(
-        'spendings',
-        '*', 
-        where={'user_id': user_id}
-    )
-    
-    return exec_select_query(conn, user_spendings_query)
-    
 
 # plots section
 def get_categoies_total_spendings(table_connection, user_id, table_name='spendings'):
@@ -287,6 +268,7 @@ def get_spendings_groupby_date(table_connection, user_id, table_name='spendings'
     spendings_by_date = exec_select_query(table_connection, select_spendings_by_date_query)
     
     return spendings_by_date
+
 
 def get_category_spendings(table_connection, user_id, category, table_name='spendings'):
 

@@ -51,28 +51,47 @@ def generate_inline_keyboard(json_key: str):
     return keyboard
 
 
-def clear_user_insert(user_id, USER_INSERTS):
-    if user_id in USER_INSERTS:
-        USER_INSERTS[user_id] = None
+def save_user_insertion(user_id, user_inserts_dict, db_connection):
+    if user_inserts_dict[user_id]:
+        user_insertion_dict = user_inserts_dict[user_id]
+        insert_user_spending(user_insertion_dict, db_connection)
+        return 'Успешно сохранил затрату в базу данных!'
+    return 'Ошибка! не нашёл запись затраты'
 
 
-def user_has_insert(user_id, USER_INSERTS):
-    return bool(USER_INSERTS[user_id]) if user_id in USER_INSERTS else False
+def delete_user_insertion(user_id, user_inserts_dict):
+    if user_id in user_inserts_dict:
+        del(user_inserts_dict[user_id])
+    return 'Отменил запись затраты. Чтобы снова ввести затрату, напишите /add_spending'
 
 
-def user_has_date(user_id, CUSTOM_DATE):
-    return user_id in CUSTOM_DATE
+def rename_category(user_id, user_message, db_connection):
+    cat_before, cat_after = user_message.split()
+    
+    update_category_query = generate_update_query('spendings', {'category': cat_after}, {
+        'user_id': user_id,
+        'category': cat_before
+    })
+
+    exec_update_query(db_connection, update_category_query)
 
 
-def set_user_spending_date(user_id, CUSTOM_DATE, date):
-    CUSTOM_DATE[user_id] = date
+def get_categories_message(user_id, db_connection):
+    
+    try:
+        categories_query = generate_select_query('spendings', ['category'], where={'user_id': user_id}, distinct=True)
+
+        print(categories_query)
+
+        user_categories = exec_select_query(db_connection, categories_query)
+        print(user_categories)
+        user_categories = list(user_categories)
+        user_categories = [f'📍{category}' for category in user_categories]
+
+        return '\n'.join(user_categories)
+
+    except Exception as e:  
+        print('get_categories_message ->', e)
+        return 'Ошибка! Не смог найти категории затрат'
 
 
-def load_user_spending_date(user_id, CUSTOM_DATE):
-    return CUSTOM_DATE[user_id]
-
-
-def save_user_insertion(user_id, USER_INSERTS):
-    if user_has_insert(user_id):
-        user_insert = USER_INSERTS[user_id]
-        insert_user_spending(user_insert)

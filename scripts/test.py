@@ -1,8 +1,12 @@
-from plots import *
-import pprint
-from load_text import load_json
-from config import BOT_CONFIG
-printer = pprint.PrettyPrinter()
+from DbFuncs import *
 
-stickers = load_json(BOT_CONFIG['STICKERS_JSON_FILEPATH'])
-printer.pprint(stickers)
+conn = create_conn()
+
+insert_query = '''INSERT INTO spendings VALUES ('wjojf', '2022-03-07', 'food', 'hamburger', 50, 'RUB')'''
+exec_insert_query(conn, insert_query)
+
+select_all_query = generate_select_all_query('spendings')
+
+print(select_all_query)
+
+print(exec_select_query(conn, select_all_query))
