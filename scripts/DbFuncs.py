@@ -239,6 +239,7 @@ def insert_user_spending(spending_dict, conn):
     except Exception as e:
         print(f'[insert_user_spending] -> {e}')
 
+    conn.close()
 
 
 

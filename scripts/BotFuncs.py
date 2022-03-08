@@ -81,12 +81,11 @@ def get_categories_message(user_id, db_connection):
     try:
         categories_query = generate_select_query('spendings', ['category'], where={'user_id': user_id}, distinct=True)
 
-        print(categories_query)
 
         user_categories = exec_select_query(db_connection, categories_query)
-        print(user_categories)
+
         user_categories = list(user_categories)
-        user_categories = [f'📍{category}' for category in user_categories]
+        user_categories = [f'📍{category[0]}' for category in user_categories]
 
         return '\n'.join(user_categories)
 

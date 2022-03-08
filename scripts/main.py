@@ -29,10 +29,6 @@ CUSTOM_DATE = {}
 WAITING_FOR_INSERT = {}
 
 
-def handle_custom_date_input(message):
-    set_user_spending_date(message.from_user.id, message.text)
-
-
 def set_user_spending_date(user_id, date):
     global CUSTOM_DATE
     CUSTOM_DATE[user_id] = date
@@ -43,18 +39,50 @@ def set_user_spending_dict(user_id, user_dict):
     USER_INSERTS[user_id] = user_dict
 
 
+def handle_current_date_input(message):
+
+    #chat.id потому что  callback.message.from_user.id это id бота
+    user_id = str(message.chat.id)
+    user_date = get_current_date()
+
+    set_user_spending_date(user_id, user_date)
+
+    ask_for_input = load_command_reply_text('ask_for_input')
+    ask_for_input_message = BOT.send_message(message.chat.id, ask_for_input)
+    BOT.register_next_step_handler(ask_for_input_message, handle_insertion_input)
+
+
+def handle_custom_date_input(message):
+
+    #chat.id потому что  callback.message.from_user.id это id бота
+    user_id = str(message.chat.id)
+    user_date = message.text
+
+    set_user_spending_date(user_id, user_date)
+
+    ask_for_input = load_command_reply_text('ask_for_input')
+    ask_for_input_message = BOT.send_message(message.chat.id, ask_for_input)
+    BOT.register_next_step_handler(ask_for_input_message, handle_insertion_input)
+
+
 def handle_insertion_input(message):
     try:
-        user_id = message.from_user.id
+        user_id = str(message.from_user.id)
         user_date = CUSTOM_DATE[user_id]
-        insertion_dict = parse_message_to_insert_dict(user_id, user_date, message.text)
-        set_user_spending_dict(message.from_user.id, insertion_dict)
+        insertion_dict = parse_message_to_insert_dict(message.text, user_id, user_date)
+
+        set_user_spending_dict(user_id, insertion_dict)
+
         validating_message = generate_validating_message(insertion_dict)
         BOT.send_message(message.chat.id, validating_message, reply_markup=VERIFY_INSERTION_INLINE_KEYBOARD_MARKUP)
 
     except Exception as e:
         print('handle_insertion_input', e)
-        BOT.send_message(message.chat.id, 'Ошибка, не смог получить')
+        BOT.send_message(message.chat.id, 'Ошибка, не смог получить затрату')
+
+
+def handle_rename_category(message):
+    pass
 
 
 @BOT.message_handler(commands=['add_spending'])
@@ -65,15 +93,16 @@ def handle_add_spending(message):
 
 @BOT.message_handler(commands=['rename_category'])
 def handle_rename_category(message):
-    sent = BOT.send_message(message.chat.id, 'Введите категорию которую хотите переименовать и новое название через пробел(mcdonalds food)')
-    BOT.message_handler(sent, rename_category_preparation)
+    rename_category_reply = load_command_reply_text('rename_category')
+    sent = BOT.send_message(message.chat.id, rename_category_reply)
+    BOT.message_handler(sent, handle_rename_category)
 
 
 @BOT.message_handler(commands=['show_categories'])
 def hande_show_categories(message):
     reply_text = load_command_reply_text('show_categories') + '\n'
 
-    categories_message = get_categories_message(message.from_user.id, DB_CONN)
+    categories_message = get_categories_message(str(message.from_user.id), DB_CONN)
 
     final_message = reply_text + categories_message
 
@@ -82,34 +111,30 @@ def hande_show_categories(message):
 
 @BOT.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
-    
+
+    callback_data = call.data
+    callback_user_id = call.from_user.id
+    callback_chat_id = call.message.chat.id
+    callback_message = call.message
+
     if 'spending_date' in call.data:
-        ask_for_input_reply = load_command_reply_text('ask_for_input')
 
         if call.data == 'spending_date_today':
-
-            set_user_spending_date(call.from_user.id, get_current_date())
-
-            ask_for_input = BOT.send_message(call.message.chat.id, ask_for_input_reply)
-            BOT.register_next_step_handler(ask_for_input, handle_insertion_input)
+            handle_current_date_input(callback_message)
 
         elif call.data == 'spending_date_custom':
-
-            reply_message = load_command_reply_text['custom_date_input']
-            sent_date = BOT.send_message(call.message.chat.id, reply_message)
-            BOT.register_next_step_handler(sent_date, handle_custom_date_input)
-            ask_for_input = BOT.send_message(call.chat.id, ask_for_input_reply)
-            BOT.register_next_step_handler(ask_for_input, handle_insertion_input)
+            ask_for_date_input = load_command_reply_text('ask_for_date_input')
+            sent = BOT.send_message(callback_chat_id, ask_for_date_input)
+            BOT.register_next_step_handler(sent, handle_custom_date_input)
 
     elif 'verify_insertion' in call.data:
         
         if call.data == 'verify_insertion_true':
-            result = save_user_insertion(call.from_user.id, USER_INSERTS)
-            BOT.send_message(call.chat.id, result)
-
+            saving_result = save_user_insertion(str(callback_user_id), USER_INSERTS, DB_CONN)
+            BOT.send_message(callback_chat_id, saving_result)
+            DB_CONN = create_conn()
         else:
-            result = clear_user_insertion(call.from_user.id, USER_INSERTS)
-            BOT.send_message(call.chat.id, result)
+            pass
 
 
 while True:

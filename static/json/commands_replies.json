@@ -30,6 +30,10 @@
 
   "verify_input": {
     "reply_text": "Проверьте ввод"
+  },
+
+  "ask_for_date_input": {
+    "reply_text": "Введите дату СТРОГО в формате"
   }
 
 }

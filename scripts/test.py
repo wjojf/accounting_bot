@@ -10,3 +10,11 @@ select_all_query = generate_select_all_query('spendings')
 print(select_all_query)
 
 print(exec_select_query(conn, select_all_query))
+
+delete_all_query = generate_delete_all_query('spendings')
+
+print(delete_all_query)
+
+exec_delete_query(conn, delete_all_query)
+
+print(exec_select_query(conn, select_all_query))
