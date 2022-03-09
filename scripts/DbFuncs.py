@@ -22,7 +22,6 @@ CREATE_USER_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS user_config(user_
 CREATE_ADMINS_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS admins(user_id TEXT, user_alias TEXT, admin_lvl TEXT)'''                                               
 
 
-
 def join_dict_values(_dict, out_separator=','):
     joined = []
 
@@ -41,7 +40,6 @@ def join_dict_values(_dict, out_separator=','):
             joined.append('='.join([str(x) for x in [k,v]]))
 
     return out_separator.join(joined)
-
 
 
 def create_conn():
@@ -63,6 +61,7 @@ def create_table(db_connection, create_query):
 
     try:
         connection_cursor.execute(create_query)
+        db_connection.commit()
     except Exception as e:
         print('create_table error')
         print(e)
@@ -74,6 +73,7 @@ def exec_insert_query(table_connection, insertion_query):
 
     try:
         connection_cursor.execute(insertion_query)
+        table_connection.commit()
 
     except Exception as e:
         print('exec_insert_query error')
@@ -86,11 +86,13 @@ def exec_select_query(table_connection, select_query):
 
     try:
         connection_cursor.execute(select_query)
+        table_connection.commit()
         return connection_cursor.fetchall()
     except Exception as e:
         print('exec_select_query error')
         print(e)
         return None
+
 
 def generate_select_all_query(table_name):
     return f'SELECT * FROM {table_name}'
@@ -135,17 +137,21 @@ def generate_update_query(table_name, update_values, where_values):
         WHERE {where_joined}
     '''
 
+
 def exec_update_query(table_connection, update_query):
     connection_cursor = table_connection.cursor()
 
     try:
         connection_cursor.execute(update_query)
+        table_connection.commit()
         return 'Success'
     except Exception as e:
         print('exec_update_query ->', e)
 
+
 def generate_insert_query(table_name, column_values_dict):
     return f'INSERT INTO {table_name} {tuple(column_values_dict.keys())} VALUES {tuple(column_values_dict.values())}'
+
 
 def generate_delete_all_query(table_name):
     return f'DELETE FROM {table_name}'
@@ -161,54 +167,12 @@ def exec_delete_query(table_connection, delete_query):
 
     try:
         connection_cursor.execute(delete_query)
+        table_connection.commit()
     except Error as e:
         print(f'exec_delete_query -> {e}')
 
 
 '''USER_CONFIG SECTION'''
-def get_user_row_from_db(user_id):
-    select_query = generate_select_query('user_config', '*', where={'user_id': user_id})
-    conn = create_conn()
-
-    user_row = exec_select_query(conn, select_query)
-
-    conn.close()
-
-    return user_row
-
-
-def make_user_admin(user_id):
-
-    select_alias_query = generate_select_query('user_config', ('user_alias'), where={'user_id': user_id}) 
-    conn = create_conn()
-    user_alias = exec_select_query(conn, select_alias_query)
-    
-    delete_user_query = generate_delete_query('user_config', where={'user_id': user_id})
-    exec_delete_query(conn, delete_user_query)
-
-    admin_insert_dict = {
-        'user_id': user_id,
-        'user_alias': user_alias,
-        'admin_lvl': 'admin'
-    } 
-    admin_insert_query = generate_insert_query('admins', admin_insert_dict)
-    exec_insert_query(conn, admin_insert_query)
-
-
-    conn.close()
-
-
-def insert_admins_from_json(admins_json):
-    admin_dicts =  admins_json['admins']
-
-    conn = create_conn()
-
-    for admin_dict in admin_dicts:
-        insert_admin_query = generate_insert_query('admins', admin_dict)
-        exec_insert_query(conn, insert_admin_query)
-
-    conn.close()
-
 
 
 def initialize_db():
@@ -225,9 +189,7 @@ def initialize_db():
     conn.close()
 
 
-
 def insert_user_spending(spending_dict, conn):
-
 
     insert_query = generate_insert_query('spendings', spending_dict)
     print(insert_query)
@@ -235,12 +197,8 @@ def insert_user_spending(spending_dict, conn):
         exec_select_query(conn, insert_query)
         print('Succesfully inserted user spending')
 
-    
     except Exception as e:
         print(f'[insert_user_spending] -> {e}')
-
-    conn.close()
-
 
 
 # plots section

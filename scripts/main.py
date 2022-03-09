@@ -132,7 +132,6 @@ def handle_callback(call):
         if call.data == 'verify_insertion_true':
             saving_result = save_user_insertion(str(callback_user_id), USER_INSERTS, DB_CONN)
             BOT.send_message(callback_chat_id, saving_result)
-            DB_CONN = create_conn()
         else:
             pass
 
