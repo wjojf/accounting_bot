@@ -144,7 +144,6 @@ def exec_update_query(table_connection, update_query):
     try:
         connection_cursor.execute(update_query)
         table_connection.commit()
-        return 'Success'
     except Exception as e:
         print('exec_update_query ->', e)
 

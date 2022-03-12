@@ -65,16 +65,17 @@ def delete_user_insertion(user_id, user_inserts_dict):
     return 'Отменил запись затраты. Чтобы снова ввести затрату, напишите /add_spending'
 
 
-def rename_category(user_id, user_message, db_connection):
-    cat_before, cat_after = user_message.split()
-    
-    update_category_query = generate_update_query('spendings', {'category': cat_after}, {
-        'user_id': user_id,
-        'category': cat_before
-    })
+def rename_category(user_id, cat_before, cat_after, db_connection):
 
-    exec_update_query(db_connection, update_category_query)
-
+    try:
+        update_category_query = generate_update_query('spendings', {'category': cat_after}, {
+            'user_id': user_id,
+            'category': cat_before
+        })
+        exec_update_query(db_connection, update_category_query)
+        return 'Успешно переименовал категорию'
+    except Exception as e:
+        return 'Ошибка! Не смог переименовать категорию'
 
 def get_categories_message(user_id, db_connection):
     

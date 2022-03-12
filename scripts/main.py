@@ -81,8 +81,16 @@ def handle_insertion_input(message):
         BOT.send_message(message.chat.id, 'Ошибка, не смог получить затрату')
 
 
-def handle_rename_category(message):
-    pass
+def handle_rename_category_message(message):
+    try:
+        cat_before, cat_after = message.text.split()
+        user_id = str(message.from_user.id)
+        renaming_result = rename_category(user_id, cat_before, cat_after, DB_CONN)
+        BOT.send_message(message.chat.id, renaming_result)
+
+    except Exception as e:
+        print('handle_rename_category ->', e)
+        BOT.send_message(message.chat.id, 'Не смог получить категории')
 
 
 @BOT.message_handler(commands=['add_spending'])
@@ -95,11 +103,11 @@ def handle_add_spending(message):
 def handle_rename_category(message):
     rename_category_reply = load_command_reply_text('rename_category')
     sent = BOT.send_message(message.chat.id, rename_category_reply)
-    BOT.message_handler(sent, handle_rename_category)
+    BOT.register_next_step_handler(sent, handle_rename_category_message)
 
 
 @BOT.message_handler(commands=['show_categories'])
-def hande_show_categories(message):
+def handle_show_categories(message):
     reply_text = load_command_reply_text('show_categories') + '\n'
 
     categories_message = get_categories_message(str(message.from_user.id), DB_CONN)
