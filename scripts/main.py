@@ -93,6 +93,16 @@ def handle_rename_category_message(message):
         BOT.send_message(message.chat.id, 'Не смог получить категории')
 
 
+@BOT.message_handler(commands=['start', 'help'])
+def handle_start(message):
+    reply_text = load_command_reply_text('help')
+    commands_description = load_commands_description()
+
+    reply_message = reply_text + '\n' +  generate_validating_message(commands_description)
+
+    BOT.send_message(message.chat.id, reply_message)
+
+
 @BOT.message_handler(commands=['add_spending'])
 def handle_add_spending(message):
     reply_text = load_command_reply_text('add_spending')

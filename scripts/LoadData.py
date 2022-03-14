@@ -33,9 +33,11 @@ def load_json(filepath: str):
 		print(f'[LOAD_JSON] -> {e}')
 		return
 
+
 def clear_file(filepath):
 	with open(filepath, 'w', encoding='utf-8') as unrecognized_commands_csv:
 		pass
+
 
 def load_csv(filepath: str):
 	try:
@@ -50,13 +52,18 @@ def load_csv(filepath: str):
 
 def load_command_reply_text(command):
 	commands_json = load_json(COMMAND_REPLIES_JSON_FILEPATH)
-    
 	if command in commands_json:
 		return commands_json[command]['reply_text']
 	
 	return f'Ты вызвал комманду {command}'
 
+
+def load_commands_description():
+	return load_json(COMMAND_REPLIES_JSON_FILEPATH)['help']['commands_description']
+
+
 '''STATIC TEXT SECTION'''
+
 
 # UNRECOGNIZED COMMANDS FUNCS
 def add_unrecognized_command(message: str):
@@ -66,6 +73,7 @@ def add_unrecognized_command(message: str):
 			csv_writer.writerow([message])
 		except:
 			print('[add_unrecognized_command] -> Could not')
+
 
 # INTENT CLASSIFICATION
 def get_intent_by_examples(message: str):
@@ -150,6 +158,6 @@ def get_current_date():
 # messages
 def generate_validating_message(insertion_dict):
 
-	dict_strings = [f'📍{k}:{v}' for k,v in insertion_dict.items()]
+	dict_strings = [f'📍{k}: {v}' for k,v in insertion_dict.items()]
 
-	return 'Проверьте ввод: ' + '\n'.join(dict_strings)
+	return '\n' + '\n'.join(dict_strings)
