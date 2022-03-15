@@ -157,7 +157,7 @@ def generate_delete_all_query(table_name):
 
 
 def generate_delete_query(table_name, where):
-    where_joined = ','.join(['='.join([k,v]) for k,v in where.items])
+    where_joined = join_dict_values(where, out_separator=' AND ')
     return f'''DELETE FROM {table_name} WHERE {where_joined}'''
 
 

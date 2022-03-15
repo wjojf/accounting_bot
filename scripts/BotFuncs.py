@@ -95,3 +95,15 @@ def get_categories_message(user_id, db_connection):
         return 'Ошибка! Не смог найти категории затрат'
 
 
+def delete_all_user_inserts(user_id, db_connection):
+
+    try:
+        delete_user_inserts_query = generate_delete_query('spendings', {'user_id': user_id})
+        print(delete_user_inserts_query)
+        exec_delete_query(db_connection, delete_user_inserts_query)
+        return 'Успешно удалил все записи'
+    except Exception as e:
+        print('delete_all_user_inserts -> ', e)
+        return f'Ошибка! Не смог удалить все записи'
+
+

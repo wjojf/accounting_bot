@@ -14,6 +14,7 @@ PLOTS_INLINE_KEYBOARD_MARKUP = generate_inline_keyboard('plots_keyboard')
 DATE_FILTER_KEYBOARD_MARKUP = generate_inline_keyboard('date_filter_keyboard')
 CUSTOM_DATE_INLINE_KEYBOARD_MARKUP = generate_inline_keyboard('add_spending_set_custom_date')
 VERIFY_INSERTION_INLINE_KEYBOARD_MARKUP = generate_inline_keyboard('verify_insertion_keyboard')
+VERIFY_DELETE_ALL_INLINE_KEYBOARD_MARKUP = generate_inline_keyboard('verify_delete_all')
 
 # BOTS
 BOT = telebot.TeleBot(token=TOKEN)
@@ -98,7 +99,7 @@ def handle_start(message):
     reply_text = load_command_reply_text('help')
     commands_description = load_commands_description()
 
-    reply_message = reply_text + '\n' +  generate_validating_message(commands_description)
+    reply_message = reply_text + '\n' + generate_validating_message(commands_description)
 
     BOT.send_message(message.chat.id, reply_message)
 
@@ -127,6 +128,12 @@ def handle_show_categories(message):
     BOT.send_message(message.chat.id, final_message)
 
 
+@BOT.message_handler(commands=['delete_all'])
+def handle_delete_all(message):
+    reply_text = load_command_reply_text('delete_all')
+    BOT.send_message(message.chat.id, reply_text, reply_markup=VERIFY_DELETE_ALL_INLINE_KEYBOARD_MARKUP)
+
+
 @BOT.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
 
@@ -151,7 +158,19 @@ def handle_callback(call):
             saving_result = save_user_insertion(str(callback_user_id), USER_INSERTS, DB_CONN)
             BOT.send_message(callback_chat_id, saving_result)
         else:
-            pass
+            clear_user_insert_result = delete_user_insertion(str(callback_chat_id), USER_INSERTS)
+            BOT.send_message(callback_chat_id, clear_user_insert_result)
+
+    elif 'delete_all' in call.data:
+
+        if call.data == 'delete_all_true':
+            delete_all_result = delete_all_user_inserts(callback_chat_id, DB_CONN)
+            BOT.send_message(callback_chat_id, delete_all_result)
+
+        elif call.data == 'delete_all_false':
+            BOT.send_message(callback_chat_id, 'Отменил удаление записей')
+
+
 
 
 while True:

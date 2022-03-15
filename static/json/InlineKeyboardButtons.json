@@ -70,5 +70,17 @@
             "text": "Неправильно!",
             "callback_data": "verify_insertion_false"
         }
+    ],
+
+    "verify_delete_all": [
+        {
+            "text": "Удалить все записи",
+            "callback_data": "delete_all_true"
+        },
+
+        {
+            "text": "Отменить удаление",
+            "callback_data": "delete_all_false"
+        }
     ]
 }
