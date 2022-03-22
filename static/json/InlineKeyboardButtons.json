@@ -13,50 +13,50 @@
     "plots_keyboard": [
         {
             "text": "Линейный график суммы затрат по датам",
-            "callback_data": "total_spendings_by_date_lineplot"
+            "callback_data": "plot_type_total_spendings_by_date_lineplot"
         },
         {
             "text": "Гистограмма суммы затрат по датам",
-            "callback_data": "total_spendings_by_date_barplot"
+            "callback_data": "plot_type_total_spendings_by_date_barplot"
         },
         {
             "text": "Гистограмма суммы затрат по датам",
-            "callback_data": "total_spendings_by_date_barplot"
+            "callback_data": "plot_type_total_spendings_by_date_barplot"
         },
         {
             "text": "Гистограмма суммы затрат в каждой из категорий",
-            "callback_data": "category_spendings_by_currency_barplot"
+            "callback_data": "plot_type_category_spendings_by_currency_barplot"
         },
         {
             "text": "Диаграмма суммы затрат в каждой из категорий",
-            "callback_data": "category_spendings_by_currency_pieplot"
+            "callback_data": "plot_type_category_spendings_by_currency_pieplot"
         }
     ],
 
-    "date_filter_keyboard": [
+    "plot_date_filter_keyboard": [
         {
             "text": "Сегодня",
-            "callback_data": "today"
+            "callback_data": "plot_date_today"
         },
         {
             "text": "Эта неделя",
-            "callback_data": "this_week"
+            "callback_data": "plot_date_this_week"
         },
         {
             "text": "Этот месяц",
-            "callback_data": "this_month"
+            "callback_data": "plot_date_this_month"
         },
         {
             "text": "Последние три месяца",
-            "callback_data": "three_months"
+            "callback_data": "plot_date_three_months"
         },
         {
             "text": "Последние полгода",
-            "callback_data": "six_months"
+            "callback_data": "plot_date_six_months"
         },
         {
             "text": "Последний год",
-            "callback_data": "this_year"
+            "callback_data": "plot_date_this_year"
         }
     ],
 

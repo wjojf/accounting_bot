@@ -77,11 +77,11 @@ def rename_category(user_id, cat_before, cat_after, db_connection):
     except Exception as e:
         return 'Ошибка! Не смог переименовать категорию'
 
+
 def get_categories_message(user_id, db_connection):
     
     try:
         categories_query = generate_select_query('spendings', ['category'], where={'user_id': user_id}, distinct=True)
-
 
         user_categories = exec_select_query(db_connection, categories_query)
 
@@ -107,3 +107,5 @@ def delete_all_user_inserts(user_id, db_connection):
         return f'Ошибка! Не смог удалить все записи'
 
 
+def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str):
+    return '../static/png/test.png'

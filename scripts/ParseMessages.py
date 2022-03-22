@@ -1,6 +1,4 @@
-from config import BOT_CONFIG
 import re
-
 
 
 def split_words(message: str):
@@ -24,22 +22,7 @@ def parse_currency(currency_from_message: str):
     return None
 
 
-def get_intent_by_message(message: str):
-
-    message = message.lower()
-
-    intent_by_examples = get_intent_by_examples(message)
-    predicted_intent = classify_intent_by_message()
-
-    if intent_by_examples != -1:
-        return intent_by_examples
-
-    return predicted_intent
-
-
 def split_user_spending_message(user_message: str):
-    #splits user message and returns a list of needed dtypes for db insert
-    # TODO: check dtypes
     return split_words(user_message)
 
 
@@ -62,6 +45,14 @@ def parse_message_to_insert_dict(user_message: str, user_id, date):
     except Exception as e:
         print(e)
         return
+
+
+def generate_validating_message(insertion_dict):
+
+    dict_strings = [f'📍{k}: {v}' for k,v in insertion_dict.items()]
+
+    return '\n' + '\n'.join(dict_strings)
+
     
 
 
