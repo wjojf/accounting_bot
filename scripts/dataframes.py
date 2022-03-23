@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 
 
-def load_df_from_db_rows(db_rows, columns):
+def load_df_from_db_rows(db_rows, columns=['user_id', 'date', 'category', 'title', 'price', 'currency']):
     try:
         return pd.DataFrame(db_rows, columns=columns)
     except Exception as e:
@@ -39,27 +39,30 @@ def get_curr_date_minus_n_months(n_months):
 
 def filter_today(df):
     today = datetime.today().strftime('%Y-%m-%d')
+
     return df[df['date'] == today]
 
 
 def filter_this_year(df):
     current_year = datetime.today().strftime('%Y')
+    df['date'] = pd.to_datetime(df['date'])
     return df[df['date'].year == current_year]
 
 
 def filter_this_month(df):
     year_month = datetime.today().strftime('%Y-%m')
+    df['date'] = pd.to_datetime(df['date'])
     return df[df['date'].strftime('%Y-%m') == year_month]
 
 
 def filter_this_week(df):
     this_week = datetime.today().isocalendar()[1]
+    df['date'] = pd.to_datetime(df['date'])
     return df[df['date'].isocalendar()[1] == this_week]
 
 
 def filter_three_months(df):
     date_min = get_curr_date_minus_n_months(3)
-
     return filter_by_datemin_datemax(df, date_min=date_min)
 
 

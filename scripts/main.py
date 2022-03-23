@@ -124,7 +124,7 @@ def prepare_user_plot(callback):
     user_plot_type = USER_PLOT_TYPE[user_id]
     user_plot_date = USER_PLOT_DATE[user_id]
 
-    user_plot_image_filepath = bf.get_user_plot(user_id, user_plot_type, user_plot_date)
+    user_plot_image_filepath = bf.get_user_plot(user_id, user_plot_type, user_plot_date, DB_CONN)
     plot_reply_text = ld.load_command_reply_text('plot_message')
     clear_user_plot(user_id)
 
