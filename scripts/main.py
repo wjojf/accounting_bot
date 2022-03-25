@@ -56,7 +56,7 @@ def set_user_plot_date(user_id, date):
     USER_PLOT_DATE[str(user_id)] = date
 
 
-def clear_user_plot(user_id: str):
+def clear_user_plot_dict(user_id: str):
     global USER_PLOT_TYPE, USER_PLOT_DATE
 
     if user_id in USER_PLOT_TYPE:
@@ -118,7 +118,7 @@ def handle_rename_category_message(message):
         BOT.send_message(message.chat.id, categories_failure_text)
 
 
-def prepare_user_plot(callback):
+def send_user_plot(callback):
 
     user_id = str(callback.message.chat.id)
     user_plot_type = USER_PLOT_TYPE[user_id]
@@ -126,10 +126,14 @@ def prepare_user_plot(callback):
 
     user_plot_image_filepath = bf.get_user_plot(user_id, user_plot_type, user_plot_date, DB_CONN)
     plot_reply_text = ld.load_command_reply_text('plot_message')
-    clear_user_plot(user_id)
+    clear_user_plot_dict(user_id)
 
     user_plot_image = open(user_plot_image_filepath, 'rb')
     BOT.send_photo(callback.message.chat.id, user_plot_image, caption=plot_reply_text)
+    user_plot_image.close()
+
+    if user_plot_image_filepath != BOT_CONFIG['ERROR_IMAGE_FILEPATH']:
+        ld.delete_image(user_plot_image_filepath)
 
 
 @BOT.message_handler(commands=['start', 'help'])
@@ -223,7 +227,7 @@ def handle_callback(call):
 
     elif 'plot_date' in call.data:
         set_user_plot_date(callback_chat_id, callback_data)
-        prepare_user_plot(call)
+        send_user_plot(call)
 
 
 def main():

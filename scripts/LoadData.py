@@ -94,7 +94,8 @@ def images_by_user_id_and_plot_type(user_id: str, plot_type: str):
 	]
 
 
-# dates
+def delete_image(image_filepath):
+	os.remove(image_filepath)
 
 
 def get_current_date():

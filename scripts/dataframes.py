@@ -10,6 +10,11 @@ def load_df_from_db_rows(db_rows, columns=['user_id', 'date', 'category', 'title
         return
 
 
+def parse_date_for_df(df):
+    print(df.columns)
+    df['date'] = pd.to_datetime(df['date'])
+
+
 def minus_n_months(curr_month: int, n: int):
     if curr_month > n:
         return curr_month - n

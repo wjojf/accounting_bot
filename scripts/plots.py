@@ -9,7 +9,7 @@ PNG_DIR = BOT_CONFIG['STATIC_PNG_DIR']
 
 
 def generate_plot_filepath(user_id, plot_type, date_filter):
-    return f'{PNG_DIR}{user_id}_{plot_type}_{date_filter})'
+    return f'{PNG_DIR}{user_id}_{plot_type}_{date_filter}.png'
 
 
 def spendings_lineplot_by_date(user_data, plot_date, plot_type='spendings_lineplot_by_date'):

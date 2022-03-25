@@ -13,11 +13,7 @@
     "plots_keyboard": [
         {
             "text": "Линейный график суммы затрат по датам",
-            "callback_data": "plot_type_total_spendings_by_date_lineplot"
-        },
-        {
-            "text": "Гистограмма суммы затрат по датам",
-            "callback_data": "plot_type_total_spendings_by_date_barplot"
+            "callback_data": "plot_type_spendings_lineplot_by_date"
         },
         {
             "text": "Гистограмма суммы затрат по датам",
@@ -25,11 +21,11 @@
         },
         {
             "text": "Гистограмма суммы затрат в каждой из категорий",
-            "callback_data": "plot_type_category_spendings_by_currency_barplot"
+            "callback_data": "plot_type_categories_barplot_by_currency"
         },
         {
             "text": "Диаграмма суммы затрат в каждой из категорий",
-            "callback_data": "plot_type_category_spendings_by_currency_pieplot"
+            "callback_data": "plot_type_categories_pieplot_by_currency"
         }
     ],
 
