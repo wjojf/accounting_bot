@@ -126,8 +126,8 @@ def send_user_plot(callback):
 
     user_plot_image_filepath = bf.get_user_plot(user_id, user_plot_type, user_plot_date, DB_CONN)
     plot_reply_text = ld.load_command_reply_text('plot_message')
-    clear_user_plot_dict(user_id)
 
+    clear_user_plot_dict(user_id)
     user_plot_image = open(user_plot_image_filepath, 'rb')
     BOT.send_photo(callback.message.chat.id, user_plot_image, caption=plot_reply_text)
     user_plot_image.close()

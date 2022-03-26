@@ -11,8 +11,13 @@ def load_df_from_db_rows(db_rows, columns=['user_id', 'date', 'category', 'title
 
 
 def parse_date_for_df(df):
-    print(df.columns)
-    df['date'] = pd.to_datetime(df['date'])
+    df['date'] = df['date'].apply(lambda x: datetime.fromisoformat(x))
+    return df
+
+
+def date_to_str_for_df(df):
+    df['date'] = df['date'].apply(lambda x: x.strftime('%Y-%m-%d'))
+    return df
 
 
 def minus_n_months(curr_month: int, n: int):
@@ -50,20 +55,22 @@ def filter_today(df):
 
 def filter_this_year(df):
     current_year = datetime.today().strftime('%Y')
-    df['date'] = pd.to_datetime(df['date'])
-    return df[df['date'].year == current_year]
+    condition = df['date'].apply(lambda x: x.year == current_year)
+    return df[condition]
 
 
 def filter_this_month(df):
     year_month = datetime.today().strftime('%Y-%m')
-    df['date'] = pd.to_datetime(df['date'])
-    return df[df['date'].strftime('%Y-%m') == year_month]
+
+    condition = df['date'].apply(lambda x: x.strftime('%Y-%m') == year_month)
+
+    return df[condition]
 
 
 def filter_this_week(df):
     this_week = datetime.today().isocalendar()[1]
-    df['date'] = pd.to_datetime(df['date'])
-    return df[df['date'].isocalendar()[1] == this_week]
+    condition = df['date'].apply(lambda x: x.isocalendar()[1] == this_week)
+    return df[condition]
 
 
 def filter_three_months(df):
@@ -105,6 +112,5 @@ def filter_df_by_date(df, date_filter_mode=None, date_min=None, date_max=None):
 
     if date_min or date_max:
         return filter_by_datemin_datemax(df, date_min, date_max)
-
 
 

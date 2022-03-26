@@ -17,11 +17,11 @@ def spendings_lineplot_by_date(user_data, plot_date, plot_type='spendings_linepl
     try:
         currency_grid = sns.FacetGrid(user_data, col='currency', height=3, aspect=1.33, margin_titles=True)
         currency_grid.map(sns.pointplot, 'date', 'price')
-        #currency_grid.set_axis_labels(x_var='date', y_var='spent')
 
         user_id = list(user_data['user_id'])[0]
         plot_filepath = generate_plot_filepath(user_id, plot_type, plot_date)
         plt.savefig(plot_filepath)
+        plt.close()
         print('Успешно сохранена картинка')
         return plot_filepath
 
@@ -44,6 +44,7 @@ def spendings_barplot_by_date(user_data, plot_date, plot_type='spendings_barplot
         user_id = list(user_data['user_id'])[0]
         filepath = generate_plot_filepath(user_id, plot_type, plot_date)
         plt.savefig(filepath)
+        plt.close()
         print('Успешно сохранена картинка')
         return filepath
 
@@ -64,6 +65,7 @@ def categories_barplot_by_currency(user_data, plot_date, plot_type='categoris_ba
         user_id = list(user_data['user_id'])[0]
         filepath = generate_plot_filepath(user_id, plot_type, plot_date)
         plt.savefig(filepath)
+        plt.close()
         print('Успешно сохранена картинка')
         return filepath
 
@@ -85,6 +87,7 @@ def categories_pieplot_by_currency(user_data, plot_date, plot_type='categories_p
 
         filepath = generate_plot_filepath(user_id, plot_type, plot_date)
         plt.savefig(filepath)
+        plt.close()
 
         return filepath
 

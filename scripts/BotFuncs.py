@@ -117,9 +117,9 @@ def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str, db_con
     user_spendings_query = dbf.generate_select_query('spendings', '*', where={'user_id': user_id})
     user_spendings_rows = dbf.exec_select_query(db_connection, user_spendings_query)
 
-    user_spendings_df = dfr.load_df_from_db_rows(user_spendings_rows)
-    #user_spendings_df = eval(f'dfr.filter_{user_plot_date}(user_spendings_df)')
-    print(user_spendings_df['date'].dtype)
+    user_spendings_df = dfr.parse_date_for_df(dfr.load_df_from_db_rows(user_spendings_rows))
+    user_spendings_df = eval(f'dfr.filter_{user_plot_date}(user_spendings_df)')
+    user_spendings_df = dfr.date_to_str_for_df(user_spendings_df)
 
     user_plot_filepath = plts.generate_plot_filepath(user_id, user_plot_type, user_plot_date)
 

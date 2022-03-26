@@ -17,7 +17,7 @@
         },
         {
             "text": "Гистограмма суммы затрат по датам",
-            "callback_data": "plot_type_total_spendings_by_date_barplot"
+            "callback_data": "plot_type_spendings_barplot_by_date"
         },
         {
             "text": "Гистограмма суммы затрат в каждой из категорий",
