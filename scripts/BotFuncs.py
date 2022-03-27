@@ -8,7 +8,12 @@ from config import BOT_CONFIG
 
 
 def generate_keyboard(json_key: str):
-    global BOT_CONFIG    
+    '''
+    :param json_key: string key (reference to KeyBoardButtons.json)
+    :return: telebot ReplyMarkupKeyboard with texts and callbacks from json file
+    '''
+
+    global BOT_CONFIG
     
     KEYBOARD_BUTTONS_JSON_FILEPATH = BOT_CONFIG['KEYBOARD_BUTTONS_JSON_FILEPATH']
     
@@ -31,6 +36,11 @@ def generate_keyboard(json_key: str):
 
     
 def generate_inline_keyboard(json_key: str):
+    '''
+    :param json_key:  string key (reference to InlineKeyboardButtons.json)
+    :return:  telebot InlineKeyboardMarkup with texts and callbacks from json file
+    '''
+
     global BOT_CONFIG
 
     INLINE_KEYBOARD_BUTTONS_JSON = BOT_CONFIG['INLINE_KEYBOARD_BUTTONS_JSON_FILEPATH']
@@ -54,6 +64,16 @@ def generate_inline_keyboard(json_key: str):
 
 
 def save_user_insertion(user_id, user_inserts_dict, db_connection):
+
+    '''
+
+    :param user_id: string of user telegram id
+    :param user_inserts_dict:  user insert in needed format to insert into db
+    :param db_connection:  db_connection to insert values
+    :return: string: saving result
+    '''
+
+
     if user_inserts_dict[user_id]:
         user_insertion_dict = user_inserts_dict[user_id]
         dbf.insert_user_spending(user_insertion_dict, db_connection)
@@ -62,12 +82,32 @@ def save_user_insertion(user_id, user_inserts_dict, db_connection):
 
 
 def delete_user_insertion(user_id, user_inserts_dict):
+
+    '''
+
+    clears user stack of inserts
+
+    :param user_id: string user telegram id
+    :param user_inserts_dict: dict of user spendings in needed format
+    :return: deleting results from dict
+    '''
+
     if user_id in user_inserts_dict:
         del(user_inserts_dict[user_id])
     return 'Отменил запись затраты. Чтобы снова ввести затрату, напишите /add_spending'
 
 
 def rename_category(user_id, cat_before, cat_after, db_connection):
+
+    '''
+    renames category for user
+
+    :param user_id: string user telegram id
+    :param cat_before: category title before renaming
+    :param cat_after:  category title after renaming
+    :param db_connection: database connection
+    :return:
+    '''
 
     try:
         update_category_query = dbf.generate_update_query('spendings', {'category': cat_after}, {
@@ -81,7 +121,15 @@ def rename_category(user_id, cat_before, cat_after, db_connection):
 
 
 def get_categories_message(user_id, db_connection):
-    
+
+    '''
+
+    :param user_id: string user telegram id
+    :param db_connection: database connection
+    :return:  Optional: list of user catgories message / error message
+    '''
+
+
     try:
         categories_query = dbf.generate_select_query('spendings', ['category'], where={'user_id': user_id}, distinct=True)
 
@@ -99,6 +147,13 @@ def get_categories_message(user_id, db_connection):
 
 def delete_all_user_inserts(user_id, db_connection):
 
+    '''
+    Deletes all user inserts from db
+    :param user_id: string user telegram id
+    :param db_connection: database connection
+    :return:
+    '''
+
     try:
         delete_user_inserts_query = dbf.generate_delete_query('spendings', {'user_id': user_id})
         print(delete_user_inserts_query)
@@ -111,6 +166,17 @@ def delete_all_user_inserts(user_id, db_connection):
 
 def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str, db_connection):
 
+    '''
+    generates needed plot image and returns its filepath
+
+    :param user_id: string telegram id
+    :param user_plot_type: string of plot type in needed format (reference plots.py)
+    :param user_plot_date: string of plot date filter in needed format (reference DataFrames.py)
+    :param db_connection: database_connection
+    :return: user plot filepath
+    '''
+
+
     user_plot_type = user_plot_type.replace('plot_type_', '')
     user_plot_date = user_plot_date.replace('plot_date_', '')
 
@@ -122,9 +188,6 @@ def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str, db_con
     user_spendings_df = dfr.date_to_str_for_df(user_spendings_df)
 
     user_plot_filepath = plts.generate_plot_filepath(user_id, user_plot_type, user_plot_date)
-
-    if ld.img_exists(user_plot_filepath):
-        return user_plot_filepath
 
     return eval(f'plts.{user_plot_type}(user_spendings_df, user_plot_date)')
 
