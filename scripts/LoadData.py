@@ -101,3 +101,9 @@ def delete_image(image_filepath):
 def get_current_date():
 	return str(datetime.now().strftime('%Y-%m-%d'))
 
+
+def clear_png_folder():
+	for file in os.listdir(BOT_CONFIG['STATIC_PNG_DIR']):
+		if file not in BOT_CONFIG['ERROR_IMAGE_FILEPATH']:
+			remove_filepath = BOT_CONFIG['STATIC_PNG_DIR'] + file
+			os.remove(remove_filepath)

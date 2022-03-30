@@ -176,7 +176,6 @@ def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str, db_con
     :return: user plot filepath
     '''
 
-
     user_plot_type = user_plot_type.replace('plot_type_', '')
     user_plot_date = user_plot_date.replace('plot_date_', '')
 
@@ -186,8 +185,6 @@ def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str, db_con
     user_spendings_df = dfr.parse_date_for_df(dfr.load_df_from_db_rows(user_spendings_rows))
     user_spendings_df = eval(f'dfr.filter_{user_plot_date}(user_spendings_df)')
     user_spendings_df = dfr.date_to_str_for_df(user_spendings_df)
-
-    user_plot_filepath = plts.generate_plot_filepath(user_id, user_plot_type, user_plot_date)
 
     return eval(f'plts.{user_plot_type}(user_spendings_df, user_plot_date)')
 

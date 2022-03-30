@@ -3,8 +3,6 @@ import sqlite3
 import datetime
 from config import BOT_CONFIG
 
-# TODO: write select funcs for plot dfs(look plots.py for columns you need)
-
 
 DB_FILEPATH = BOT_CONFIG['DB_FILEPATH']
 
@@ -23,6 +21,14 @@ CREATE_ADMINS_CONFIG_TABLE_QUERY = '''CREATE TABLE IF NOT EXISTS admins(user_id 
 
 
 def join_dict_values(_dict, out_separator=','):
+
+    '''
+    Modifies python dict to string format. Used to parse dict into SQL string (f.e, where query)
+    :param _dict: dict to modify
+    :param out_separator: separator for k=v pairs
+    :return: string needed for SQL query
+    '''
+
     joined = []
 
     if len(_dict.keys()) == 1:
@@ -44,6 +50,11 @@ def join_dict_values(_dict, out_separator=','):
 
 def create_conn():
 
+    '''
+    Creates a database connection
+    :return: sqlite db.connection
+    '''
+
     db_file = DB_FILEPATH
     conn = None
 
@@ -57,17 +68,35 @@ def create_conn():
         
 
 def create_table(db_connection, create_query):
+
+    '''
+
+    :param db_connection:
+    :param create_query: string format sql query to execute
+    :return:
+    '''
+
     connection_cursor = db_connection.cursor()
 
     try:
         connection_cursor.execute(create_query)
         db_connection.commit()
+
     except Exception as e:
         print('create_table error')
         print(e)
 
+    return
+
 
 def exec_insert_query(table_connection, insertion_query):
+
+    '''
+    Commits insert query into db
+    :param table_connection:
+    :param insertion_query: string format insert query
+    :return: None
+    '''
 
     connection_cursor = table_connection.cursor()
 
@@ -79,8 +108,16 @@ def exec_insert_query(table_connection, insertion_query):
         print('exec_insert_query error')
         print(e)
 
+    return
 
 def exec_select_query(table_connection, select_query):
+
+    '''
+    Commits select query and returns selected values
+    :param table_connection:
+    :param select_query: string format
+    :return: list of tuples of selected values / None
+    '''
 
     connection_cursor = table_connection.cursor()
 
@@ -91,7 +128,7 @@ def exec_select_query(table_connection, select_query):
     except Exception as e:
         print('exec_select_query error')
         print(e)
-        return None
+        return
 
 
 def generate_select_all_query(table_name):
@@ -99,7 +136,7 @@ def generate_select_all_query(table_name):
 
 
 def generate_select_query(table_name, columns, where=None, groupby=None, distinct=False):
-    # handle columns
+
     if len(columns) == 1:
         columns_string = f'{columns[0]}'
     else:
@@ -126,7 +163,6 @@ def generate_select_query(table_name, columns, where=None, groupby=None, distinc
         
     
 def generate_update_query(table_name, update_values, where_values):
-
 
     update_joined = join_dict_values(update_values)
     where_joined = join_dict_values(where_values, ' AND ')

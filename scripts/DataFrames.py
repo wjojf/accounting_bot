@@ -1,8 +1,16 @@
 import pandas as pd
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 def load_df_from_db_rows(db_rows, columns=['user_id', 'date', 'category', 'title', 'price', 'currency']):
+
+    '''
+    :param db_rows: list of tuples (db rows values)
+    :param columns: column names for dataframe
+    :return: pandas DataFrame/ None
+    '''
+
     try:
         return pd.DataFrame(db_rows, columns=columns)
     except Exception as e:
@@ -35,16 +43,7 @@ def int_year_to_str(int_year):
 
 
 def get_curr_date_minus_n_months(n_months):
-    curr_date = str(datetime.today().strftime('%Y-%m-%d'))
-
-    curr_month_int = int(datetime.today().strftime('%m'))
-
-    minus_3_months = int_year_to_str(minus_n_months(curr_month_int, n_months))
-
-    date_min_list = curr_date.split('-')
-    date_min_list[1] = minus_3_months
-
-    return '-'.join(date_min_list)
+    return (datetime.now() - relativedelta(months=n_months)).strftime('%Y-%m-%d')
 
 
 def filter_today(df):
@@ -75,6 +74,7 @@ def filter_this_week(df):
 
 def filter_three_months(df):
     date_min = get_curr_date_minus_n_months(3)
+    print(date_min)
     return filter_by_datemin_datemax(df, date_min=date_min)
 
 
