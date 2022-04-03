@@ -1,12 +1,10 @@
 import telebot
-from telebot.types import InputMediaPhoto
 from initialize import initialize_repository
 from config import BOT_CONFIG
 import DbFuncs as dbf
 import LoadData as ld
 import BotFuncs as bf
 import ParseMessages as pm
-
 try:
     import Image
 except:
@@ -130,40 +128,7 @@ def send_user_plot(callback):
     user_plots_filepath_list = bf.get_user_plot(user_id, user_plot_type, user_plot_date, DB_CONN)
 
     clear_user_plot_dict(user_id)
-
-    try:
-        if isinstance(user_plots_filepath_list, list) and len(user_plots_filepath_list) > 1:
-            media_group_to_send = []
-            opened_images = []
-
-            for plot_filepath in user_plots_filepath_list:
-                image = open(plot_filepath, 'rb')
-                input_media_photo = InputMediaPhoto(image)
-                media_group_to_send.append(input_media_photo)
-                opened_images.append(image)
-
-            BOT.send_media_group(chat_id, media_group_to_send)
-            BOT.send_message(chat_id, plot_reply_text)
-
-            for opened_image in opened_images:
-                opened_image.close()
-
-            for plot_filepath in user_plots_filepath_list:
-                ld.delete_image(plot_filepath)
-
-        elif isinstance(user_plots_filepath_list, str):
-            if user_plots_filepath_list == BOT_CONFIG['ERROR_IMAGE_FILEPATH']:
-                error_image = open(user_plots_filepath_list, 'rb')
-                BOT.send_photo(chat_id, error_image, caption=plot_error_text)
-            else:
-                plot_image = open(user_plots_filepath_list, 'rb')
-                BOT.send_photo(plot_image, caption=plot_reply_text)
-
-        return
-
-    except Exception as e:
-        print(e)
-        return
+    bf.send_plots(BOT, chat_id, user_plots_filepath_list)
 
 
 @BOT.message_handler(commands=['start', 'help'])

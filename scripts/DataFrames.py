@@ -74,7 +74,6 @@ def filter_this_week(df):
 
 def filter_three_months(df):
     date_min = get_curr_date_minus_n_months(3)
-    print(date_min)
     return filter_by_datemin_datemax(df, date_min=date_min)
 
 
@@ -114,3 +113,8 @@ def filter_df_by_date(df, date_filter_mode=None, date_min=None, date_max=None):
         return filter_by_datemin_datemax(df, date_min, date_max)
 
 
+def objectSeriesMid(pd_series):
+    l = list(pd_series)
+    if len(pd_series) % 2 != 0:
+        return [l[len(l) // 2]]
+    return [l[len(l) // 2], l[len(l) // 2 + 1]]

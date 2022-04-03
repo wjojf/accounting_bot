@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 from config import BOT_CONFIG
+import DataFrames as dfr
 
 
 PNG_DIR = BOT_CONFIG['STATIC_PNG_DIR']
@@ -8,6 +9,18 @@ PNG_DIR = BOT_CONFIG['STATIC_PNG_DIR']
 
 def generate_plot_filepath(user_id, plot_type, date_filter, currency):
     return f'{PNG_DIR}{user_id}_{plot_type}_{date_filter}_{currency}.png'
+
+
+def getXticks(pd_series):
+    mid = dfr.objectSeriesMid(pd_series)
+    return [
+        val
+        if val == pd_series.min()
+        or val == pd_series.max()
+        or val in mid
+        else ''
+        for val in pd_series
+    ]
 
 
 def generate_plot_title(user_alias, plot_date):
@@ -31,6 +44,7 @@ def spendings_lineplot_by_date(user_data, plot_date, plot_type='spendings_linepl
     try:
         plt.style.use(['dark_background'])
         user_id = list(user_data['user_id'])[0]
+        user_data.sort_values(by='date', inplace=True)
 
         plots_filepath = []
 
@@ -46,7 +60,10 @@ def spendings_lineplot_by_date(user_data, plot_date, plot_type='spendings_linepl
 
             ax.set_xlabel('Дата')
             ax.set_ylabel('Потрачено')
-            # ax.tick_params(axis='x', labelrotation=90)
+
+            xticks = getXticks(currency_df['date'])
+            ax.axes.xaxis.set_ticklabels(xticks)
+
             ax.legend()
 
             fig.savefig(plot_filepath)
@@ -62,7 +79,40 @@ def spendings_lineplot_by_date(user_data, plot_date, plot_type='spendings_linepl
 
 
 def spendings_barplot_by_date(user_data, plot_date, plot_type='spendings_barplot_by_date'):
-    return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
+
+    try:
+        plt.style.use(['dark_background'])
+        user_id = list(user_data['user_id'])[0]
+        plot_title = generate_plot_title(user_id, plot_date)
+
+        plots = []
+
+        for currency in user_data['currency'].unique():
+            currency_df = user_data[user_data['currency'] == currency]
+            currency_df.sort_values(by='date', inplace=True)
+
+            plot_filepath = generate_plot_filepath(user_id, plot_type, plot_date, currency)
+
+            fig, ax = plt.subplots()
+
+            sns.catplot(kind='bar', data=currency, x='date', y='price', ax=ax)
+            ax.set_title(plot_title)
+            ax.set_xlabel('Дата')
+            ax.set_ylabel('Потрачено')
+
+            xticks = getXticks(currency_df['date'])
+            ax.axes.xaxis.set_ticklabels(xticks)
+
+            fig.savefig(plot_filepath)
+            plots.append(plot_filepath)
+
+            plt.close(fig)
+
+        return plots
+
+    except Exception as e:
+        print(e)
+        return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
 
 
 def categories_barplot_by_currency(user_data, plot_date, plot_type='categoris_barplot_by_currency'):
