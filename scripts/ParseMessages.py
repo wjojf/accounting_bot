@@ -1,4 +1,7 @@
 import re
+import LoadData as ld
+from config import BOT_CONFIG
+from random import choice
 
 
 def split_words(message: str):
@@ -53,8 +56,29 @@ def generate_validating_message(insertion_dict):
 
     return '\n' + '\n'.join(dict_strings)
 
-    
+
+def classifyIntent(message):
+    message_lower = message.lower()
+
+    text_replies_json = ld.load_json(BOT_CONFIG["TEXT_REPLIES_JSON_FILEPATH"])
+
+    for intent in text_replies_json:
+        for keyword in text_replies_json[intent]['keywords']:
+            if message_lower in keyword:
+                return intent
+    return None
 
 
+def loadIntentAnswer(intent):
+
+    text_replies_json = ld.load_json(BOT_CONFIG["TEXT_REPLIES_JSON_FILEPATH"])
+
+    try:
+        return choice(text_replies_json[intent]['replies'])
+    except Exception as e:
+        print(e)
+        return 'Не понял тебя:('
 
 
+def loadUnknownIntentAnswer():
+    return 'Не понимаю тебя. Спроси что-нибудь другое'

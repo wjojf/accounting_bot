@@ -129,6 +129,7 @@ def send_user_plot(callback):
 
     clear_user_plot_dict(user_id)
     bf.send_plots(BOT, chat_id, user_plots_filepath_list)
+    return
 
 
 @BOT.message_handler(commands=['start', 'help'])
@@ -223,6 +224,20 @@ def handle_callback(call):
     elif 'plot_date' in call.data:
         set_user_plot_date(callback_chat_id, callback_data)
         send_user_plot(call)
+
+
+@BOT.message_handler(content_types=['text'])
+def handle_text_message(message):
+    messageIntent = pm.classifyIntent(message.text)
+
+    if messageIntent:
+        messageAnswer = pm.loadIntentAnswer(messageIntent)
+        BOT.send_message(message.chat.id, messageAnswer)
+
+    else:
+        unknownIntentAnswer = pm.loadUnknownIntentAnswer()
+        BOT.send_message(message.chat.id, unknownIntentAnswer)
+    return
 
 
 def main():
