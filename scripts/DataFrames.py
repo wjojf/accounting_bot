@@ -54,7 +54,7 @@ def filter_today(df):
 
 def filter_this_year(df):
     current_year = datetime.today().strftime('%Y')
-    condition = df['date'].apply(lambda x: x.year == current_year)
+    condition = df['date'].apply(lambda x: x.strftime('%Y') == current_year)
     return df[condition]
 
 

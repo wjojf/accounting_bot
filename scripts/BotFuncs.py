@@ -182,7 +182,10 @@ def get_user_plot(user_id: str, user_plot_type: str, user_plot_date: str, db_con
     user_spendings_df = eval(f'dfr.filter_{user_plot_date}(user_spendings_df)')
     user_spendings_df = dfr.date_to_str_for_df(user_spendings_df)
 
-    return eval(f'plts.{user_plot_type}(user_spendings_df, user_plot_date)')
+    if len(user_spendings_df) > 0:
+        return eval(f'plts.{user_plot_type}(user_spendings_df, user_plot_date)')
+
+    return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
 
 
 def send_plots(BOT, chat_id, user_plots_filepath_list):

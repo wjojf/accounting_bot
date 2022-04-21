@@ -157,5 +157,34 @@ def categories_barplot_by_currency(user_data, plot_date, plot_type='categoris_ba
 
 
 def categories_pieplot_by_currency(user_data, plot_date, plot_type='categories_pieplot_by_currency'):
-    return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
+
+    try:
+        plt.style.use(['dark_background'])
+        user_id = list(user_data['user_id'])[0]
+        plot_title = generate_plot_title(user_id, plot_date)
+
+        plots = []
+
+        for currency in user_data['currency'].unique():
+            currency_df = user_data[user_data['currency'] == currency].copy()
+            currency_df = currency_df.groupby(['user_id', 'category'], as_index=False).agg({'price': "sum"})
+            
+            fig, ax = plt.subplots()
+
+            ax.pie(currency_df['price'], labels=currency_df['category'].apply(lambda x: x + f', {currency}'))
+            ax.set_title(plot_title)
+
+            fig.tight_layout()
+
+            plot_filepath = generate_plot_filepath(user_id, plot_type, plot_date, currency)
+            fig.savefig(plot_filepath)
+            plt.close(fig)
+
+            plots.append(plot_filepath)
+
+        return plots
+
+    except Exception as e:
+        print(e)
+        return BOT_CONFIG['ERROR_IMAGE_FILEPATH']
 
