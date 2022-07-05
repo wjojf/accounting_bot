@@ -9,7 +9,7 @@ This bot is by university project. The goal of the project was to create a teleg
 3. sqlite3 ([docs here](https://docs.python.org/3/library/sqlite3.html))
 4. matplotlib ([docs here](https://matplotlib.org/))
 5. seaborn ([docs here](https://seaborn.pydata.org/))
-6. pandas (https://pandas.pydata.org/)
+6. pandas ([docs here](https://pandas.pydata.org/))
 
 # **Quick start**
 
